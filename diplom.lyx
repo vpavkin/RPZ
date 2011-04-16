@@ -1,0 +1,4081 @@
+#LyX 1.6.7 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+% Footnotes will be "numbered" by symbols (reset on each page)
+\renewcommand{\thefootnote}{ \fnsymbol{footnote}}
+\@addtoreset{footnote}{page}
+
+% Yes! It allows to indent first paragraphs!
+\usepackage{indentfirst}
+
+% Allows to unite several rows in the table
+\usepackage{multirow}
+\end_preamble
+\use_default_options true
+\language russian
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\float_placement H
+\paperfontsize 12
+\spacing other 1.5
+\use_hyperref true
+\pdf_bookmarks false
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize a4paper
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 3cm
+\topmargin 2cm
+\rightmargin 1.5cm
+\bottommargin 2cm
+\headheight 1cm
+\headsep 1cm
+\footskip 0.5cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language french
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Введение
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+addcontentsline{toc}{section}{Введение}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Рефакторинг – это преобразование исходного кода программы, направленное
+ на улучшение читаемости кода или усовершенствование архитектуры и не изменяющее
+ семантику работы программы.
+ Использование рефакторинга упрощает поддержку кода и позволяет безопасно
+ подготовить его к архитектурным изменениям.
+ Регулярный рефакторинг кода снижает вероятность появления ошибок.
+\end_layout
+
+\begin_layout Standard
+Язык Go - императивный язык программирования, разработанный компанией Google
+ в 2009 г.
+ 
+\end_layout
+
+\begin_layout Standard
+Целью данной дипломной работы является разработка системы автоматизированного
+ рефакторинга программ, написанных на языке Go.
+ Сама система должна быть написана также на языке Go.
+\end_layout
+
+\begin_layout Standard
+Разработка поделена на два этапа:
+\end_layout
+
+\begin_layout Enumerate
+Разработка семантического анализатора программ, написанных на языке Go.
+\end_layout
+
+\begin_layout Enumerate
+Реализация модулей рефакторинга.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Обзор существующих систем рефакторинга
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Обзор систем рефакторинга."
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+В данном разделе приведен обзор существующих разработок в области автоматическог
+о рефакторинга.
+ Для обзора взяты три мощные среды разработки: Microsoft Visual Studio 2010,
+ Eclipse, IntelliJ IDEA 9.0.3.
+ В обзоре проведено сравнение этих программных пакетов по предоставляемым
+ инструментам работы с исходным кодом, а также кратко описаны некоторые
+ базовые и продвинутые приемы рефакторинга.
+ 
+\end_layout
+
+\begin_layout Subsection
+MS Visual Studio 2010
+\end_layout
+
+\begin_layout Standard
+Среда разработки Microsoft Visual Studio 2010 для языка C#, содержит базовый
+ набор приемов рефакторинга.
+ Он включает в себя: 
+\end_layout
+
+\begin_layout Itemize
+Переименование сущностей.
+ 
+\begin_inset Newline newline
+\end_inset
+
+Данный прием рефакторинга позволяет безопасно переименовывать идентификаторы
+ сущностей программы (переменных, методов, имен классов и т.д.), осуществляя
+ модификацию всех вхождений сущности в исходный код.
+ 
+\end_layout
+
+\begin_layout Itemize
+Извлечение метода.
+ 
+\begin_inset Newline newline
+\end_inset
+
+Извлечение метода – это выделение выбранного набора инструкций языка в отдельный
+ метод и замена этих инструкций вызовом метода.
+ Среда разработки самостоятельно определяет сигнатуру метода.
+ 
+\end_layout
+
+\begin_layout Itemize
+Инкапсуляция поля в свойство с автоматической генерацией аксессоров.
+ 
+\begin_inset Newline newline
+\end_inset
+
+Этот прием рефакторинга позволяет обернуть поле в свойство, с автоматическим
+ созданием заглушек для методов доступа get и set.
+ 
+\end_layout
+
+\begin_layout Itemize
+Извлечение и реализация интерфейсов.
+ 
+\begin_inset Newline newline
+\end_inset
+
+Извлечение интерфейса из класса – это создание интерфейса на основе некоторых
+ (или всех) public свойств или методов класса.
+ 
+\begin_inset Newline newline
+\end_inset
+
+Реализация интерфейса – это создание в классе заглушек методов и свойств,
+ необходимых для реализации классом выбранного интерфейса.
+ 
+\end_layout
+
+\begin_layout Itemize
+Перестановка и удаление параметров метода.
+ 
+\begin_inset Newline newline
+\end_inset
+
+Этот прием рефакторинга позволяет безопасно изменять сигнатуры методов,
+ производя необходимые изменения во всех вызовах метода.
+ 
+\end_layout
+
+\begin_layout Standard
+Продвинутые средства рефакторинга для Visual Studio подключаются в виде
+ коммерчески-распространяемого плагина ReSharper.
+ 
+\end_layout
+
+\begin_layout Subsection
+Eclipse
+\end_layout
+
+\begin_layout Standard
+Среда разработки Eclipse для языка Java включает в себя все приемы рефакторинга,
+ доступные в Microsoft Visual Studio 2010.
+ Кроме них, разработчик может воспользоваться следующими преобразованиями:
+\end_layout
+
+\begin_layout Itemize
+Генерация конструктора класса на основе полей класса, или же на основе конструкт
+ора одного из родительских классов.
+\end_layout
+
+\begin_layout Itemize
+Перемещение сущностей между классами;
+\end_layout
+
+\begin_layout Itemize
+Перемещение сущностей вверх и вниз по иерархии наследования; 
+\end_layout
+
+\begin_layout Itemize
+Изменение сигнатуры метода с возможностью оставить старый метод.
+ Этот метод будет содержать в себе вызов нового;
+\end_layout
+
+\begin_layout Itemize
+Сортировка объявлений.
+ 
+\end_layout
+
+\begin_layout Standard
+Eclipse позволяет сортировать как объявления внутри класса, так и сами классы
+ в файле.
+ При сортировке объявления объединяются в следующие группы: 
+\end_layout
+
+\begin_layout Itemize
+Типы.
+\end_layout
+
+\begin_layout Itemize
+Статические поля.
+\end_layout
+
+\begin_layout Itemize
+Статические инициализаторы.
+\end_layout
+
+\begin_layout Itemize
+Статические методы.
+\end_layout
+
+\begin_layout Itemize
+Поля.
+\end_layout
+
+\begin_layout Itemize
+Инициализаторы.
+\end_layout
+
+\begin_layout Itemize
+Конструкторы.
+\end_layout
+
+\begin_layout Itemize
+Методы.
+ 
+\end_layout
+
+\begin_layout Standard
+Внутри группы объявления сортируются по алфавиту.
+ После этого группы располагаются внутри класса в очередности, указанной
+ пользователем в настройках.
+\end_layout
+
+\begin_layout Subsection
+IntelliJ IDEA
+\end_layout
+
+\begin_layout Standard
+IntelliJ IDEA предоставляет самый большой набор средств работы с кодом.
+ Помимо вышеописанных видов рефакторинга, данная среда разработки позволяет
+ автоматически производить следующие действия:
+\end_layout
+
+\begin_layout Itemize
+«Безопасное» удаление сущности.
+ 
+\begin_inset Newline newline
+\end_inset
+
+При таком удалении среда разработки предоставит пользователю информацию
+ обо всех ссылках на удаляемую сущность, при их наличии.
+ 
+\end_layout
+
+\begin_layout Itemize
+Обертывание метода в отдельный класс и автоматическая замена его вызовов
+ на вызовы вида: 
+\family typewriter
+\series bold
+new NewClass().Method()
+\series default
+ 
+\family default
+.
+\end_layout
+
+\begin_layout Itemize
+Упаковка возвращаемого значения метода в объект нового класса или в объект
+ существующего класса, с указанием имени поля, содержащего возвращаемое
+ значение.
+ 
+\end_layout
+
+\begin_layout Itemize
+Замена наследования на делегирование.
+ 
+\begin_inset Newline newline
+\end_inset
+
+Методы целевого интерфейса оборачиваются в новый внутренний класс, и в исходном
+ классе создается объект этого класса.
+ Вызовы методов интерфейса исходный класс делегирует этому объекту.
+ 
+\end_layout
+
+\begin_layout Itemize
+Поиск фрагментов кода, дублирующих код определенного метода, и замена этих
+ фрагментов вызовом метода.
+ 
+\end_layout
+
+\begin_layout Subsection
+Примеры
+\end_layout
+
+\begin_layout Standard
+В этом разделе приведены примеры рефакторинга кода.
+\end_layout
+
+\begin_layout Subsubsection
+Изменение сигнатуры метода в Eclipse
+\end_layout
+
+\begin_layout Standard
+Пусть есть следующий метод:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=Java,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+public int someMethod(int a){ 
+\end_layout
+
+\begin_layout Plain Layout
+
+	return 10*a;
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Если применить команду 
+\begin_inset Quotes fld
+\end_inset
+
+Change Method Signature...
+\begin_inset Quotes frd
+\end_inset
+
+, и в диалоговом окне добавить новый параметр типа 
+\family typewriter
+\series bold
+Object
+\family default
+\series default
+, а также установить флаг 
+\begin_inset Quotes fld
+\end_inset
+
+Keep original method as delegate to changed method
+\begin_inset Quotes frd
+\end_inset
+
+, то результат будет выглядеть следующим образом:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=Java,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+public int someMethod(int a){
+\end_layout
+
+\begin_layout Plain Layout
+
+	return someMethod(a, null); 	
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public int someMethod(int a, Object newParam){
+\end_layout
+
+\begin_layout Plain Layout
+
+	return a*10;
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Обертывание метода в класс в IntelliJ IDEA
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Обертывание-метода-в"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Обертывание метода в класс представляет собой следующее преобразование.
+ Пусть есть метод:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=Java,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+public int someMethod(){ 
+\end_layout
+
+\begin_layout Plain Layout
+
+	return 10;
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Команда «Extract Method Object…» запросит у пользователя имя и некоторые
+ свойства нового класса, после чего произведет рефакторинг.
+ Например, если дать новому классу имя 
+\family typewriter
+\series bold
+NewClass
+\family default
+\series default
+ и объявить его 
+\family typewriter
+\series bold
+private
+\family default
+\series default
+-классом, то преобразованный код будет выглядеть так:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=Java,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+public int someMethod(){ 
+\end_layout
+
+\begin_layout Plain Layout
+
+	return new NewClass().invoke();
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+private class NewClass{
+\end_layout
+
+\begin_layout Plain Layout
+
+	public int invoke(){
+\end_layout
+
+\begin_layout Plain Layout
+
+		return 10;
+\end_layout
+
+\begin_layout Plain Layout
+
+	} 
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Упаковка возвращаемого значения метода в IntelliJ IDEA
+\end_layout
+
+\begin_layout Standard
+Произведем упаковку возвращаемого значения для метода 
+\family typewriter
+\series bold
+someMethod
+\family default
+\series default
+ из раздела 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Обертывание-метода-в"
+
+\end_inset
+
+.
+ Команда 
+\begin_inset Quotes fld
+\end_inset
+
+Wrap Return Value...
+\begin_inset Quotes frd
+\end_inset
+
+ позволяет упаковать возвращаемое значение в объект нового класса (внутреннего
+ или обособленного) и уже существующего класса.
+ Для уже существующего класса надо указать поле для хранения упаковываемого
+ значения.
+ Например, если указать данной команде упаковать возвращаемое значение метода
+ 
+\family typewriter
+\series bold
+someMethod
+\family default
+\series default
+ в новый внутренний класс 
+\family typewriter
+\series bold
+StoreClass
+\family default
+\series default
+, то результат будет выглядеть следующим образом:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=Java,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+public StoreClass someMethod(){ 
+\end_layout
+
+\begin_layout Plain Layout
+
+	return new StoreClass(10);
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public class StoreClass{
+\end_layout
+
+\begin_layout Plain Layout
+
+	private final int value;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	public StoreClass(int value){
+\end_layout
+
+\begin_layout Plain Layout
+
+		this.value = value;
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	public int getValue(){
+\end_layout
+
+\begin_layout Plain Layout
+
+		return value;
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Замена наследования на делегирование в IntelliJ IDEA
+\end_layout
+
+\begin_layout Standard
+Пусть есть некоторый интерфейс 
+\family typewriter
+\series bold
+SomeInterface
+\family default
+\series default
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=Java,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+public interface SomeInterface{ 
+\end_layout
+
+\begin_layout Plain Layout
+
+	int someMethod(int x);
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+И есть класс 
+\family typewriter
+\series bold
+SomeClass
+\family default
+\series default
+, который реализует этот интерфейс: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=Java,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+public class SomeClass implements SomeInterface{ 
+\end_layout
+
+\begin_layout Plain Layout
+
+	int someMethod(int x){
+\end_layout
+
+\begin_layout Plain Layout
+
+		return x;
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Если применить команду 
+\begin_inset Quotes fld
+\end_inset
+
+Replace Inheritance With Delegation...
+\begin_inset Quotes frd
+\end_inset
+
+, то класс изменится следующим образом:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=Java,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+public class SomeClass{
+\end_layout
+
+\begin_layout Plain Layout
+
+	private final InnerSomeInterfaceClass someInterface =
+\end_layout
+
+\begin_layout Plain Layout
+
+							new InnerSomeInterfaceClass();
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	public int someMethod(int x){  
+\end_layout
+
+\begin_layout Plain Layout
+
+		return someInterface.someMethod(x); 
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	private class InnerSomeInterfaceClass 
+\end_layout
+
+\begin_layout Plain Layout
+
+				  implements SomeInterface{
+\end_layout
+
+\begin_layout Plain Layout
+
+		public int someMethod(int x){
+\end_layout
+
+\begin_layout Plain Layout
+
+			return x;
+\end_layout
+
+\begin_layout Plain Layout
+
+		}
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Здесь закрытое поле 
+\family typewriter
+\series bold
+someInterface
+\family default
+\series default
+ -- это делегат, которому перенаправляются все вызовы методов интерфейса
+ 
+\family typewriter
+\series bold
+SomeInterface
+\family default
+\series default
+.
+ Тип этого делегата -- автоматически созданный внутренний класс 
+\family typewriter
+\series bold
+InnerSomeInterfaceClass
+\family default
+\series default
+, в котором теперь хранится реализация всех методов интерфейса 
+\family typewriter
+\series bold
+SomeInterface
+\family default
+\series default
+.
+\end_layout
+
+\begin_layout Section
+Основные сведения о языке Go
+\end_layout
+
+\begin_layout Standard
+В этом разделе кратко описан синтаксис языка программирования Go.
+ Также описаны основные особенности этого языка и их значение в контексте
+ семантического анализа и рефакторинга программ.
+\end_layout
+
+\begin_layout Subsection
+Структура программ и синтаксис
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Структура-и-синтаксис"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Программой на языке Go является набор так называемых пакетов (package).
+ Любой пакет имеет определенное имя и состоит из одного или нескольких файлов
+ с исходным кодом.
+ Любая сущность, объявленная в файле пакета, видна в других файлах этого
+ пакета.
+ При выполнении определенных условий сущность может быть экспортирована
+ и использована в других пакетах.
+\end_layout
+
+\begin_layout Standard
+Импортировать пакет можно с помощью оператора 
+\family typewriter
+\series bold
+import
+\family default
+\series default
+.
+ Для импортируемого пакета можно указать специальный псевдоним, отличный
+ от имени пакета, под которым к нему можно будет обращаться в пределах этого
+ файла.
+\end_layout
+
+\begin_layout Standard
+Язык Go позволяет объявлять и использовать следующие виды сущностей:
+\end_layout
+
+\begin_layout Itemize
+Переменная/константа.
+ Могут быть глобальными в пределах пакета, и даже экспортироваться из него.
+\end_layout
+
+\begin_layout Itemize
+Тип.
+ Помимо набора базовых типов, программист может объявлять и другие типы
+ данных:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+структуры
+\end_layout
+
+\begin_layout Itemize
+массивы
+\end_layout
+
+\begin_layout Itemize
+каналы
+\end_layout
+
+\begin_layout Itemize
+словари
+\end_layout
+
+\begin_layout Itemize
+интерфейсы
+\end_layout
+
+\begin_layout Itemize
+типы-функции
+\end_layout
+
+\begin_layout Itemize
+типы-псевдонимы
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Функция/метод.
+ Методом называется функция, вызываемая для экземпляров определенного типа.
+ Здесь можно провести аналогию с методами класса в объектно-ориентированных
+ языках программирования.
+\end_layout
+
+\begin_layout Standard
+Опишем несколько синтаксических особенностей языка Go:
+\end_layout
+
+\begin_layout Itemize
+Быстрое объявление.
+ Наряду со стандартным объявлением переменной с явным указанием типа, в
+ Go есть возможность совместить объявление переменной с одновременным присваиван
+ием ей значения.
+ Это действие записывается как обычное присваивание, но вместо оператора
+ присваивания '
+\family typewriter
+\series bold
+=
+\family default
+\series default
+' используется специальный оператор '
+\family typewriter
+\series bold
+:=
+\family default
+\series default
+'.
+ В этом случае компилятор самостоятельно вычисляет тип переменной по типу
+ присваиваемого значения.
+\begin_inset Newline newline
+\end_inset
+
+Наличие такого оператора означает, что семантический анализатор должен уметь
+ вычислять тип произвольного выражения языка.
+\end_layout
+
+\begin_layout Itemize
+Блочное объявление констант и идентификатор 
+\family typewriter
+\series bold
+iota
+\family default
+\series default
+.
+ Переменные и константы могут быть объявлены целыми блоками.
+ Например, блок констант выглядит следующим образом:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+const (
+\end_layout
+
+\begin_layout Plain Layout
+
+	a = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+	b = 1
+\end_layout
+
+\begin_layout Plain Layout
+
+	//...
+\end_layout
+
+\begin_layout Plain Layout
+
+)
+\end_layout
+
+\end_inset
+
+Для удобства, в блоках констант может быть использовать идентификатор 
+\family typewriter
+\series bold
+iota
+\family default
+\series default
+, значение которого в начале блока равно 0 и инкрементируется после каждой
+ новой константы.
+\begin_inset Newline newline
+\end_inset
+
+Эта возможность вводит зависимость значения константы от ее положения в
+ блоке.
+ Следовательно, сортировать объявления внутри блока, использующего 
+\family typewriter
+\series bold
+iota
+\family default
+\series default
+, нельзя.
+\end_layout
+
+\begin_layout Itemize
+Мультиприсваивание.
+ Операторы присваивания и быстрого объявления могут принимать сразу по несколько
+ операндов слева и справа.
+ Например, корректна следующая запись:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+a,b = 1,2
+\end_layout
+
+\end_inset
+
+Кроме того, функции и методы также могут возвращать целый список значений,
+ и в правой части присваивания вместо списка операндов может стоять вызов
+ такой функции:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+a,b = getAandB()
+\end_layout
+
+\end_inset
+
+Следовательно, рефакторинг функций и методов Go должен уметь работать со
+ списками возвращаемых значений.
+ Например, должно быть возможно извлечение списка выражений в метод.
+\end_layout
+
+\begin_layout Subsection
+Типизация
+\end_layout
+
+\begin_layout Standard
+Язык Go не является объектно ориентированным языком, в нем нет таких понятий
+ как 
+\begin_inset Quotes fld
+\end_inset
+
+класс
+\begin_inset Quotes frd
+\end_inset
+
+ и 
+\begin_inset Quotes fld
+\end_inset
+
+наследование
+\begin_inset Quotes frd
+\end_inset
+
+.
+ С другой стороны, тип может иметь свои методы и инкапсулировать логику.
+ Также есть механизм, напоминающий наследование, который позволяет избежать
+ дублирования одного функционала в разных типах.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+про утиную типизацию надо?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+В языке Go реализована статическая утиная типизация.
+ Это означает, что тип объекта определяется набором его методов, и наследование
+ интерфейсов в явном виде отсутствует.
+ Причем проверка того факта, что тип реализует требуемый интерфейс, производится
+ на этапе компиляции.
+ Приведем пример, демонстрирующий статическую утиную типизацию в языке Go:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+type Reader interface {
+\end_layout
+
+\begin_layout Plain Layout
+
+    Read(p []byte) (n int, err os.Error) 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+type T1 int
+\end_layout
+
+\begin_layout Plain Layout
+
+type T2 int
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+func (t T1) Read(p []byte) (n int, err os.Error) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	//...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+В этом случает тип 
+\family typewriter
+\series bold
+T1
+\family default
+\series default
+ реализует интерфейс 
+\family typewriter
+\series bold
+Reader
+\family default
+\series default
+, хотя явным образом это нигде не указывается.
+ Если есть некая функция 
+\family typewriter
+\series bold
+f(r Reader)
+\family default
+\series default
+, принимающая на вход объект типа 
+\family typewriter
+\series bold
+Reader
+\family default
+\series default
+.
+ При передаче в нее объекта типа 
+\family typewriter
+\series bold
+T2
+\family default
+\series default
+ компилятор выдаст ошибку.
+ Передача же объекта типа 
+\family typewriter
+\series bold
+T1
+\family default
+\series default
+ в этом случае является корректным действием.
+\end_layout
+
+\begin_layout Standard
+Также рассмотрим механизм встраивания (embedding).
+ Если структурный тип расширяет функциональность уже существующего типа,
+ то применяется этот механизм.
+ Новый тип получает все поля и методы встраиваемого типа.
+ Встраиваться могут сразу несколько типов.
+\end_layout
+
+\begin_layout Standard
+Встраивание типа 
+\family typewriter
+\series bold
+T1
+\family default
+\series default
+ в 
+\family typewriter
+\series bold
+T2
+\family default
+\series default
+ выглядит так:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+type T1 struct {
+\end_layout
+
+\begin_layout Plain Layout
+
+    A int
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+func (t T1) F() {}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+type T2 struct{
+\end_layout
+
+\begin_layout Plain Layout
+
+	T1
+\end_layout
+
+\begin_layout Plain Layout
+
+	B int
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+В этом случае, если некоторый объект 
+\family typewriter
+\series bold
+O
+\family default
+\series default
+ имеет тип 
+\family typewriter
+\series bold
+T1
+\family default
+\series default
+, то для него можно вызывать встроенную функцию 
+\family typewriter
+\series bold
+F
+\family default
+\series default
+ и прочитать встроенное поле 
+\family typewriter
+\series bold
+A
+\family default
+\series default
+.
+\end_layout
+
+\begin_layout Subsection
+Средства распараллеливания и синхронизации параллельных вычислений
+\end_layout
+
+\begin_layout Standard
+Одним из главных достоинств языка Go является наличие мощных и удобных встроенны
+х средств распараллеливания и синхронизации параллельных вычислений.
+ 
+\end_layout
+
+\begin_layout Standard
+Go-рутиной 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+название?
+\end_layout
+
+\end_inset
+
+ называется функция языка Go, выполняющаяся параллельно основному потоку
+ и другим Go-рутинам.
+ Go-рутина может быть создана в любом места программы с помощью специального
+ оператора 
+\family typewriter
+\series bold
+go
+\family default
+\series default
+.
+ После завершения функции Go-рутина уничтожается.
+\end_layout
+
+\begin_layout Standard
+Go-рутины синхронизируются с помощью каналов.
+ Каналом называется специальный объект, через который Go-рутины могут обменивать
+ся другими объектами.
+ Например, одна Go-рутина может 
+\begin_inset Quotes fld
+\end_inset
+
+послать
+\begin_inset Quotes frd
+\end_inset
+
+ объект в канал, а другая получить его из канала.
+ Операции посылки/приема могут быть как блокирующими, так и неблокирующими.
+ В случае блокирующего приема Go-рутина останавливает свое выполнение, пока
+ какой-нибудь другой код не пошлет в этот канал объект.
+ Соответственно блокирующая посылка остановит Go-рутину до того момента,
+ пока не найдется получатель объекта.
+\end_layout
+
+\begin_layout Standard
+Неблокирующая операция посылки/приема не останавливает выполнение Go-рутины.
+ В случае отсутствия объекта на другом конце канала, операция возвращает
+ нулевое значение типа передаваемых объектов и специальный флаг, сообщающий
+ о неуспешной операции.
+ Для неблокирующих операций каналы могут иметь буфер конечного размера.
+\end_layout
+
+\begin_layout Standard
+Классические синхрообъекты (например, мьютексы) доступны в стандартной библиотек
+е пакетов языка Go.
+\end_layout
+
+\begin_layout Section
+Семантика выполняемых преобразований
+\end_layout
+
+\begin_layout Standard
+В этой главе описаны методы рефакторинга, реализованные в данной дипломной
+ работе.
+ Также разобраны особенности проведения этих преобразований в программах,
+ написанных на Go.
+\end_layout
+
+\begin_layout Subsection
+Переименование идентификаторов
+\end_layout
+
+\begin_layout Standard
+Рефакторинг 
+\begin_inset Quotes fld
+\end_inset
+
+переименование идентификатора
+\begin_inset Quotes frd
+\end_inset
+
+ позволяет безопасно переименовать все вхождения выбранной сущности программы.
+ 
+\end_layout
+
+\begin_layout Standard
+Это преобразование применяется для улучшения читаемости программы.
+ Человек, работающий с кодом, в случае хорошо подобранного названия гораздо
+ быстрее поймет назначение сущности.
+ Если это назначение меняется, или принято решение о присвоении сущности
+ более подходящего имени, применяется рефакторинг 
+\begin_inset Quotes fld
+\end_inset
+
+переименование идентификатора
+\begin_inset Quotes frd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Черты языка Go вносят некоторые особенности в семантику этого преобразования.
+ Наиболее существенное ограничение при переименовании сущности -- влияние
+ имени на модификатор доступа к сущности.
+ 
+\end_layout
+
+\begin_layout Standard
+В языке Go есть всего два модификатора доступа: 
+\begin_inset Quotes fld
+\end_inset
+
+внутренний
+\begin_inset Quotes frd
+\end_inset
+
+ и 
+\begin_inset Quotes fld
+\end_inset
+
+экспортируемый
+\begin_inset Quotes frd
+\end_inset
+
+.
+ Сущности первого типа видны лишь в пределах пакета, в котором они объявлены.
+ К экспортируемым сущностям можно получить доступ и из других пакетов.
+ Для указания модификатора доступа используется специальное правило -- если
+ первая буква имени сущности является заглавной, то сущность экспортируется.
+ Если же имя начинается со строчной буквы -- сущность является внутренней.
+ 
+\end_layout
+
+\begin_layout Standard
+В контексте рефакторинга это правило означает, что при переименовании необходимо
+ запретить менять регистр первой буквы имени.
+ В противном случае это, очевидно, приведет к изменению семантики программы,
+ что противоречит определению рефакторинга.
+\end_layout
+
+\begin_layout Standard
+Есть определенный класс символов, переименование которых также связано с
+ некоторыми особенностями языка Go.
+ В этом языке есть специальная конструкция, позволяющая производить передачу
+ управления в зависимости от типа определенного выражения.
+ Ниже приведен пример такой конструкции:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+switch t := s.(type){
+\end_layout
+
+\begin_layout Plain Layout
+
+	case int: //...
+\end_layout
+
+\begin_layout Plain Layout
+
+	case bool: //...
+\end_layout
+
+\begin_layout Plain Layout
+
+	case io.Reader: //...
+\end_layout
+
+\begin_layout Plain Layout
+
+	case os.Error: //...	
+\end_layout
+
+\begin_layout Plain Layout
+
+	default:	//...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Здесь в блоке 
+\family typewriter
+\series bold
+default
+\family default
+\series default
+ переменная 
+\family typewriter
+\series bold
+t
+\family default
+\series default
+ имеет тот же тип, что и переменная s, а в каждом 
+\family typewriter
+\series bold
+case
+\family default
+\series default
+-блоке -- тип, указанный после соответствующего слова 
+\family typewriter
+\series bold
+case
+\family default
+\series default
+.
+ То есть, с одной стороны, мы имеем один символ 
+\family typewriter
+\series bold
+t
+\family default
+\series default
+, с другой стороны, в зависимости от области использования, этот символ
+ имеет разный тип.
+ В контексте переименования это означает, что несмотря на множественность
+ типов переменной 
+\family typewriter
+\series bold
+t
+\family default
+\series default
+, представление программы, созданное семантическим анализатором, должно
+ позволять прозрачное переименование всех вхождений переменной 
+\family typewriter
+\series bold
+t
+\family default
+\series default
+ во все 
+\family typewriter
+\series bold
+case
+\family default
+\series default
+/
+\family typewriter
+\series bold
+default
+\family default
+\series default
+-блоки.
+\end_layout
+
+\begin_layout Subsection
+Извлечение метода
+\end_layout
+
+\begin_layout Standard
+Извлечение метода -- прием рефакторинга, производящий выделение выбранного
+ набора инструкций языка в отдельный метод и замену этих инструкций вызовом
+ метода.
+ Извлечение метода применяется для устранения дублирования кода, разбиения
+ слишком больших методов на части и улучшения читаемости кода.
+ Ниже приведены несколько примеров, демонстрирующие наиболее частые случаи
+ применения рефакторинга 
+\begin_inset Quotes fld
+\end_inset
+
+извлечение метода
+\begin_inset Quotes frd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Часто необходимо устранить дублирование кода.
+ Это делается с помощью выделения повторяющейся логики в отдельный метод.
+ Пусть есть две функции:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+func f1(){
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+	a.m1(b)
+\end_layout
+
+\begin_layout Plain Layout
+
+	c.m2(a)
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+func f2(){
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+	a1.m1(b1)
+\end_layout
+
+\begin_layout Plain Layout
+
+	c1.m2(a1)
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+В обеих функциях выделенные участки кода выполняют идентичные действия с
+ локальными переменными.
+ Эти участки лучше заменить вызовом новой функции:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+func newF(a Ta,b Tb,c Tc){
+\end_layout
+
+\begin_layout Plain Layout
+
+	a.m1(b)
+\end_layout
+
+\begin_layout Plain Layout
+
+	c.m2(a)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+func f1(){
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+	newF(a,b,c)
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+func f2(){
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+	newF(a1,b1,c1)
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+Выделение выбранного набора инструкций функции 
+\family typewriter
+\series bold
+f1
+\family default
+\series default
+ в функцию 
+\family typewriter
+\series bold
+newF
+\family default
+\series default
+, и замена этого набора на вызов и называется извлечением метода.
+ Такой прием может использоваться и при отсутствии дублирования, в случае
+ когда нужно разбить слишком длинный метод на логические части.
+\end_layout
+
+\begin_layout Standard
+В данном примере дублирующий фрагмент кода функции 
+\family typewriter
+\series bold
+f2
+\family default
+\series default
+ также заменен на вызов, но это уже должно быть сделано программистом вручную.
+ Поиск фрагментов кода с идентичной семантикой -- это отдельная задача.
+ В современных системах рефакторинга начинает появляться подобный функционал,
+ однако, качество результатов оставляет желать лучшего.
+\end_layout
+
+\begin_layout Standard
+Также извлечение метода применяется для улучшения читаемости сложных выражений.
+ Приведем пример:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+if (a && ! (b.m1() == c.m1())) || d { //...
+ }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Здесь с первого взгляда сложно понять, в чем заключается смысл условия в
+ операторе 
+\family typewriter
+\series bold
+if
+\family default
+\series default
+.
+ Однако, выделение этого выражения в метод позволяет дать ему описание:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+if isItRainingNow(a,b,c,d){ //...
+ }
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+func isItRainingNow(a bool, c,b T1, d bool) bool{
+\end_layout
+
+\begin_layout Plain Layout
+
+	return (a && ! (b.m1() == c.m1())) || d 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+Теперь смысл ветвления стал гораздо более прозрачным, и код читается лучше.
+\end_layout
+
+\begin_layout Standard
+Так как функция в языке Go может возвращать список из нескольких объектов,
+ то рефакторинг 
+\begin_inset Quotes fld
+\end_inset
+
+извлечение метода
+\begin_inset Quotes frd
+\end_inset
+
+ для программ на Go должен уметь извлекать в метод произвольный список выражений.
+\end_layout
+
+\begin_layout Standard
+Наличие в Go указателей и оператора взятия адреса позволяет извлекать в
+ метод код, содержащий присваивание переменной, являющейся для нового метода
+ параметром.
+ Рассмотрим пример:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+func f1(){
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+	a = 10
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Простой перенос оператора присваивания в новую функцию нарушит семантику
+ работы программы, потому что после вызова значение переменной 
+\family typewriter
+\series bold
+a
+\family default
+\series default
+ в функции 
+\family typewriter
+\series bold
+f1
+\family default
+\series default
+ останется тем же, что и до вызова.
+ Передача параметра по указателю позволяет решить эту проблему:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+func f1(){
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+	newF(&a)
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+func newF(a *int){
+\end_layout
+
+\begin_layout Plain Layout
+
+	*a = 10
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Встраивание метода
+\end_layout
+
+\begin_layout Standard
+Встраивание метода -- прием рефакторинга, который заменяет вызов метода
+ его кодом с подстановкой передаваемых параметров.
+ Операция встраивания метода является обратной к операции извлечения метода.
+ Она применяется в случаях, когда в определенном месте программы поведение,
+ заданное вызываемым методом, нужно поменять.
+ Также встраивание метода может понадобиться, когда в процессе разработки
+ остался лишь один вызов некоторого метода, и этот вызов можно встроить
+ без вреда для читаемости кода.
+\end_layout
+
+\begin_layout Standard
+Одной из проблем, которые необходимо решить при реализации встраивания метода
+ -- конфликты имен локальных переменных метода с именами переменных, видимых
+ в области, в которой находится встраиваемый вызов.
+ 
+\end_layout
+
+\begin_layout Standard
+Далее приведен пример встраивания метода.
+ Код до выполнения преобразования:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+func f1(a int){
+\end_layout
+
+\begin_layout Plain Layout
+
+	b := false
+\end_layout
+
+\begin_layout Plain Layout
+
+	println(a, b)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+func f2(){
+\end_layout
+
+\begin_layout Plain Layout
+
+	b:= true
+\end_layout
+
+\begin_layout Plain Layout
+
+	f1(5)
+\end_layout
+
+\begin_layout Plain Layout
+
+	println(b)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+При проведении процедуры встраивания вызова функции 
+\family typewriter
+\series bold
+f1
+\family default
+\series default
+ в теле функции 
+\family typewriter
+\series bold
+f2
+\family default
+\series default
+ необходимо будет переименовать локальную переменную 
+\family typewriter
+\series bold
+b
+\family default
+\series default
+ во встраиваемом коде, так как она будет конфликтовать с локальной переменной
+ 
+\family typewriter
+\series bold
+b
+\family default
+\series default
+ функции 
+\family typewriter
+\series bold
+f2
+\family default
+\series default
+.
+ Код функции 
+\family typewriter
+\series bold
+f2
+\family default
+\series default
+ после преобразования приведен ниже:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+func f2(){
+\end_layout
+
+\begin_layout Plain Layout
+
+	b:= true
+\end_layout
+
+\begin_layout Plain Layout
+
+	b0 := false
+\end_layout
+
+\begin_layout Plain Layout
+
+	println(5, b0)
+\end_layout
+
+\begin_layout Plain Layout
+
+	println(b)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Отметим также, что вместо параметра 
+\family typewriter
+\series bold
+a
+\family default
+\series default
+ было подставлено выражение, переданное в вызов.
+ Подстановка параметров также входит в задачи процедуры встраивания метода.
+\end_layout
+
+\begin_layout Subsection
+Извлечение интерфейса
+\end_layout
+
+\begin_layout Standard
+Классическое преобразование извлечения интерфейса в объектно-ориентированных
+ языках программирования определяется как создание интерфейса, включающего
+ в себя все публичные методы некоторого класса.
+ Однако, в языке с утиной типизацией, коим является Go, такая операция не
+ принесет большой пользы.
+ 
+\end_layout
+
+\begin_layout Standard
+Гораздо более практичной является следующая вариация извлечения интерфейса:
+ формирование нового интерфейса из всех обращений к параметру некоторого
+ метода в рамках этого метода.
+ После создания интерфейса тип параметра заменяется на этот интерфейс.
+ Такая операция перехода от конкретного типа к интерфейсному позволяет обобщить
+ метод на целый класс параметров, не затрагивая при этом семантику существующего
+ кода.
+\end_layout
+
+\begin_layout Standard
+Приведем пример извлечения интерфейса.
+ Исходный метод выглядит следующим образом:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+func f2(b T){
+\end_layout
+
+\begin_layout Plain Layout
+
+	b.M1()
+\end_layout
+
+\begin_layout Plain Layout
+
+	//...
+\end_layout
+
+\begin_layout Plain Layout
+
+	b.M2()
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+Здесь T - конкретный тип, с некоторым набором методов, включающим в себя
+ M1 и M2.
+ Проведем описанную выше процедуру извлечения интерфейса для параметра b:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+type NewI interface{
+\end_layout
+
+\begin_layout Plain Layout
+
+	M1()
+\end_layout
+
+\begin_layout Plain Layout
+
+	M2()
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+func f2(b NewI){ //...
+ }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Стоит заметить, что при извлечении интерфейса необходимо проверить, что
+ с параметром, для которого извлекается интерфейс, не производится никаких
+ действий, кроме вызова его методов и еще небольшого набора разрешенных
+ действий.
+ В этот набор входит сравнение с nil, а также передача параметра в рекурсивный
+ вызов на том же месте в списке аргументов.
+ Любое другое использование этого параметра, при изменении его типа на интерфейс
+ный, может привести к нарушению семантики работы программы или даже к ошибкам
+ компиляции.
+\end_layout
+
+\begin_layout Subsection
+Реализация интерфейса
+\end_layout
+
+\begin_layout Standard
+Реализация интерфейса -- прием рефакторинга, который создает для заданного
+ типа заглушки методов, реализующие заданный интерфейс.
+ Это преобразование используется только как вспомогательный инструмент разработч
+ика.
+ Пусть в процессе разработки вводится новый тип, который должен реализовывать
+ некоторый насыщенный методами интерфейс.
+ Тогда автоматическая реализация интерфейса позволяет:
+\end_layout
+
+\begin_layout Itemize
+сразу же начать использовать этот тип в коде, требующем реализацию интерфейса,
+ а логику реализации разрабатывать постепенно.
+ Таким образом, разработчик способен выбирать текущую задачу, а программа
+ все время находится в компилируемом состоянии; 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+криво, как лучше сказать?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+не тратить время на рутинное кодирование сигнатур методов.
+\end_layout
+
+\begin_layout Standard
+Приведем пример проведения реализации интерфейса.
+ Исходный код:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+type ImplementMe interface{
+\end_layout
+
+\begin_layout Plain Layout
+
+	M1(int,int)
+\end_layout
+
+\begin_layout Plain Layout
+
+	M2()int
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+type FillMe int
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+После процедуры реализации интерфейса ImplementMe для типа FillMe, вышеприведенн
+ые объявления не изменятся, а код дополнится следующими методами:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+func (FillMe) M1(int,int){
+\end_layout
+
+\begin_layout Plain Layout
+
+	panic("Not implemented yet")
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+func (FillMe) M2() int{
+\end_layout
+
+\begin_layout Plain Layout
+
+	panic("Not implemented yet")
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+У рефакторинга 
+\begin_inset Quotes fld
+\end_inset
+
+реализация интерфейса
+\begin_inset Quotes frd
+\end_inset
+
+ есть свои подводные камни.
+ Например, тип может уже частично реализовывать выбранный интерфейс.
+ В этом случае, процедура должна объявить лишь недостающие методы.
+ Возможна и другая ситуация, когда у типа имеется метод, имя которого совпадает
+ с именем одного из методов интерфейса, однако их сигнатуры различаются.
+ В этом случае рефакторинг проводиться не должен, а пользователя необходимо
+ проинформировать об ошибке.
+\end_layout
+
+\begin_layout Subsection
+Сортировка объявлений
+\end_layout
+
+\begin_layout Standard
+Сортировку объявлений обычно не относят к приемам рефакторинга, однако это
+ преобразование является полезным инструментом разработчика наряду с описанными
+ выше.
+ Сортировка преследует те же цели, что и рефакторинг, а именно -- повышает
+ читаемость кода, не изменяя семантики его работы.
+ 
+\end_layout
+
+\begin_layout Standard
+Естественно, что сортировка объявлений возможна лишь в языках, допускающих
+ произвольный порядок объявлений.
+ Язык Go относится к таким языкам.
+\end_layout
+
+\begin_layout Standard
+Сортировка объявлений является очевидным преобразованием и не нуждается
+ в примере.
+ Однако, некоторые особенности языка Go накладывают ограничения на сортировку
+ внутри групп констант.
+ Эта проблема подробнее описана в разделе 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Структура-и-синтаксис"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Работа с исходными текстами программ на Go с помощью стандартных библиотек
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Работа-с-исходными"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+В разработке данной дипломной работы были использованы пакеты из стандартной
+ библиотеки Go.
+ В этой главе будет дано их краткое описание.
+\end_layout
+
+\begin_layout Standard
+Полную документацию по используемым пакетам, а также их исходный код можно
+ найти в 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-2"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Синтаксический анализ
+\end_layout
+
+\begin_layout Standard
+В стандартной библиотеке пакетов языка Go есть лексический и синтаксический
+ анализаторы, которые регулярно синхронизируются с частыми изменениями в
+ языке.
+ Поэтому было принято решение реализовать front-end системы с помощью этих
+ пакетов.
+\end_layout
+
+\begin_layout Subsubsection
+Пакет 
+\begin_inset Quotes fld
+\end_inset
+
+go/parser
+\begin_inset Quotes frd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Синтаксический анализатор программ на языке Go реализован в пакете 
+\begin_inset Quotes fld
+\end_inset
+
+go/parser
+\begin_inset Quotes frd
+\end_inset
+
+.
+ Интерфейс пакета предоставляет несколько вариаций выполнения процедуры
+ синтаксического разбора.
+ Например, можно провести анализ одного файла или целой директории.
+ В последнем случае можно указать фильтр по которому будут отбираться файлы
+ для анализа.
+ 
+\end_layout
+
+\begin_layout Standard
+При вызове любой функции синтаксического анализа из пакета 
+\begin_inset Quotes fld
+\end_inset
+
+go/parser
+\begin_inset Quotes frd
+\end_inset
+
+, она автоматически производит чтение входного потока и лексический анализ.
+ После этого запустится синтаксический анализатор, реализованный методом
+ рекурсивного спуска.
+ Результатом работы функции является синтаксическое дерево или, в случае
+ нескольких входных файлов, синтаксический лес.
+ Если текст программы содержит синтаксические ошибки, то синтаксическое
+ дерево будет частично состоять из специальных объектов, обозначающих ошибочный
+ узел.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+тоже кривовато
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Пакет 
+\begin_inset Quotes fld
+\end_inset
+
+go/ast
+\begin_inset Quotes frd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Типы всех узлов синтаксического дерева, возвращаемого синтаксическим анализаторо
+м, а также некоторый вспомогательный функционал для работы с такими деревьями
+ находится в пакете 
+\begin_inset Quotes fld
+\end_inset
+
+go/ast
+\begin_inset Quotes frd
+\end_inset
+
+.
+ В пакете объявлены несколько интерфейсов, соответствующих разным типам
+ узлов синтаксического дерева :
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+Node
+\family default
+\series default
+.
+ Этот интерфейс реализует любой узел дерева синтаксического разбора; Синтасическ
+ое дерево частично хранит информацию о координатах узлов в файле, поэтому
+ каждый узел должен реализовывать функции 
+\family typewriter
+\series bold
+Pos()
+\family default
+\series default
+ и 
+\family typewriter
+\series bold
+End()
+\family default
+\series default
+, некоторым образом определяющие смещения границ узла относительно начала
+ файла.
+ Подробнее о координатной системе в разделе 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Пакет-go/token"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+Expr
+\family default
+\series default
+.
+ Этот интерфейс реализуется узлами-
+\emph on
+выражениями
+\emph default
+ такими как различные идентификаторы (тип 
+\family typewriter
+\series bold
+ast.Ident
+\family default
+\series default
+), вызовы (тип 
+\family typewriter
+\series bold
+ast.CallExpr
+\family default
+\series default
+), унарные и бинарные выражения (типы 
+\family typewriter
+\series bold
+ast.UnaryExpr
+\family default
+\series default
+ и 
+\family typewriter
+\series bold
+ast.BinaryExpr
+\family default
+\series default
+) и т.д.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+Stmt
+\family default
+.
+ Этот интерфейс реализуется узлами-
+\emph on
+операторами
+\emph default
+, такими как оператор присваивания (тип 
+\family typewriter
+\series bold
+ast.AssignStmt
+\family default
+\series default
+), операторы ветвления (
+\family typewriter
+\series bold
+ast.IfStmt
+\family default
+\series default
+, 
+\family typewriter
+\series bold
+ast.SwicthStmt
+\series default
+ 
+\family default
+и т.д.) и циклов (
+\family typewriter
+\series bold
+ast.ForStmt
+\family default
+\series default
+, 
+\family typewriter
+\series bold
+ast.RangeStmt
+\series default
+ 
+\family default
+и т.д.).
+ Также есть тип, описывающий оператор-выражение (
+\family typewriter
+\series bold
+ast.ExprStmt
+\family default
+\series default
+).
+ Примером такого выражения может служить вызов функции, не сохраняющий результат
+ возврата.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+Decl
+\family default
+\series default
+ и 
+\family typewriter
+\series bold
+Spec
+\family default
+\series default
+.
+ Эти интерфейсы реализуется узлами-
+\emph on
+объявлениями
+\emph default
+, такими как, например, 
+\family typewriter
+\series bold
+ast.FuncDecl
+\family default
+\series default
+, описывающий обьявление функции, или 
+\family typewriter
+\series bold
+ast.ValueSpec
+\family default
+\series default
+, соответствующий обьявлению переменной.
+\end_layout
+
+\begin_layout Standard
+Пакет 
+\begin_inset Quotes fld
+\end_inset
+
+go/ast
+\begin_inset Quotes frd
+\end_inset
+
+ предоставляет удобное средство обхода синтаксического дерева -- это функция
+ 
+\family typewriter
+\series bold
+ast.Walk()
+\family default
+\series default
+.
+ Она принимает на вход объект, реализующий интерфейс 
+\family typewriter
+\series bold
+ast.Visitor
+\family default
+\series default
+.
+ Этот интерфейс состоит из одной функции 
+\family typewriter
+\series bold
+Visit()
+\family default
+\series default
+, определяющей действия, которые нужно выполнить во всех узлах дерева.
+\end_layout
+
+\begin_layout Subsection
+Преобразование синтаксического дерева в исходный код
+\end_layout
+
+\begin_layout Standard
+Выполнение любого рефакторинга в разработанной системе подразумевает некоторое
+ изменение синтаксического дерева или деревьев.
+ Наряду с синтаксическим анализатором, стандартная библиотека пакетов Go
+ предоставляет относительно удобное средство преобразования синтаксического
+ дерева в исходный код.
+ В связи с этим, было принято решение сохранять преобразованный код с помощью
+ этого преобразования.
+\end_layout
+
+\begin_layout Standard
+Пакетом, реализующим описанные функции, является пакет 
+\begin_inset Quotes fld
+\end_inset
+
+go/printer
+\begin_inset Quotes frd
+\end_inset
+
+.
+ Далее, для простоты, он будет называться принтером, а само преобразование
+ мы будем называть 
+\begin_inset Quotes fld
+\end_inset
+
+печатью синтаксического дерева
+\begin_inset Quotes frd
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Для печати синтаксического дерева также используются типы из пакета 
+\begin_inset Quotes fld
+\end_inset
+
+go/token
+\begin_inset Quotes frd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Пакет 
+\begin_inset Quotes fld
+\end_inset
+
+go/token
+\begin_inset Quotes frd
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Пакет-go/token"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Волей разработчиков из Google, пакет 
+\begin_inset Quotes fld
+\end_inset
+
+go/token
+\begin_inset Quotes frd
+\end_inset
+
+ несет две несвязанных функции.
+ Во-первых, в нем хранится список лексем, порождаемых лексическим анализатором
+ и используемых в синтаксическом дереве.
+ Во-вторых, в процессе развития синтаксического анализатора, на пакет 
+\begin_inset Quotes fld
+\end_inset
+
+go/token
+\begin_inset Quotes frd
+\end_inset
+
+ возложили обязанности по хранению информации о координатах узлов синтаксическог
+о дерева в файле.
+ На данный момент система представления этой информации выглядит следующим
+ образом:
+\end_layout
+
+\begin_layout Itemize
+Объект типа 
+\family typewriter
+\series bold
+token.FileSet
+\family default
+\series default
+ хранит набор объектов 
+\family typewriter
+\series bold
+token.File
+\family default
+\series default
+, для каждого из которых определено базовое смещение и длина.
+ Базовые смещения назначаются файлам таким образом, что любая позиция в
+ любом файле из набора 
+\family typewriter
+\series bold
+token.FileSet 
+\family default
+\series default
+однозначно определяется целым числом.
+ Набор 
+\family typewriter
+\series bold
+token.FileSet
+\family default
+\series default
+ заполняется синтаксическим анализатором.
+\end_layout
+
+\begin_layout Itemize
+Объект типа 
+\family typewriter
+\series bold
+token.File
+\family default
+\series default
+, кроме всего прочего, хранит информацию о переносах строк в соответствующем
+ файле и предоставляет функции по преобразованию числовых смещений в классически
+е файловые координаты вида {имя файла, строка, столбец}.
+\end_layout
+
+\begin_layout Standard
+Корректная информация о координатах узлов синтаксического дерева в файле
+ необходима принтеру для адекватной печати этого дерева в исходный код.
+\end_layout
+
+\begin_layout Subsubsection
+Пакет 
+\begin_inset Quotes fld
+\end_inset
+
+go/printer
+\begin_inset Quotes frd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Пакет 
+\begin_inset Quotes fld
+\end_inset
+
+go/printer
+\begin_inset Quotes frd
+\end_inset
+
+ из стандартной библиотеки пакетов Go содержит типы и функции, позволяющие
+ преобразовать синтаксическое дерево в исходный код на языке Go.
+\end_layout
+
+\begin_layout Standard
+Тип 
+\family typewriter
+\series bold
+Config
+\family default
+\series default
+ описывает набор настроек для печати, таких как, например, длина табуляции
+ в пробелах.
+ Для типа 
+\family typewriter
+\series bold
+Config
+\family default
+\series default
+ определеня одна функция 
+\family typewriter
+\series bold
+Fprintf()
+\family default
+\series default
+, которая производит печать переданного ей синтаксического дерева.
+ Также, аргументами функции являются объект, реализующий интерфейс 
+\family typewriter
+\series bold
+io.Reader
+\family default
+\series default
+, в который будет производиться печать, и набор 
+\family typewriter
+\series bold
+token.FileSet
+\family default
+\series default
+, предоставляющий информацию о координатах узлов.
+ 
+\end_layout
+
+\begin_layout Standard
+При подготовке измененного синтаксического дерева к печати важно соответствующим
+ образом скорректировать информацию о координатах, чтобы она соответствовала
+ измененному дереву.
+ Это усложняется тем, что информация о координатах распределена по двум
+ объектам.
+ Смещения границ узлов хранятся непосредственно в синтаксическом дереве,
+ а информация, позволяющая перевести смещение в координаты, хранится в наборе
+ 
+\family typewriter
+\series bold
+token.FileSet
+\family default
+\series default
+.
+ Более подробно проблемы, связанные с преобразованием координат, будут описаны
+ в соответствующем разделе 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ссылка
+\end_layout
+
+\end_inset
+
+ главы 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ссылка
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Проектирование системы рефакторинга
+\end_layout
+
+\begin_layout Standard
+В этом разделе описана структура разработанной программной системы и алгоритмы
+ ее работы.
+ 
+\end_layout
+
+\begin_layout Standard
+В общем, выполнение одного рефакторинга проводится в три этапа:
+\end_layout
+
+\begin_layout Enumerate
+Подготовка входной программы.
+ Необходима для корректной работы системы с программой.
+ Производится один раз, перед первым использованием системы с данной программой.
+\end_layout
+
+\begin_layout Enumerate
+Анализ поданной на вход программы.
+\end_layout
+
+\begin_layout Enumerate
+Проведение преобразований синтаксического дерева, реализующих выбранный
+ рефакторинг.
+\end_layout
+
+\begin_layout Enumerate
+Сохранение результата.
+\end_layout
+
+\begin_layout Standard
+Далее, каждый из этапов будет рассмотрен подробнее.
+\end_layout
+
+\begin_layout Subsection
+Подготовка исходной программы
+\end_layout
+
+\begin_layout Standard
+Для корректной работы системы рефакторинга, ей необходимо сообщить некоторую
+ информацию о преобразуемой программе.
+ Часть этой информации носит статический характер, поэтому целесообразно
+ сообщить ее единственный раз, перед первым проведением рефакторинга, и
+ использовать в дальнейшем.
+\end_layout
+
+\begin_layout Standard
+К статической информации о программе относится спикок пакетов, реализующих
+ эту программу, а также, расположение исходного когда сторонних пакетов,
+ используемых программой.
+ Эта информация должна быть занесена пользователем в специальный файл конфигурац
+ии перед первым использованием системы рефакторинга с программой.
+\end_layout
+
+\begin_layout Standard
+Также, в исходниках стандартной библиотеки Go есть пакеты, содержимое которых
+ зависит от операционной системы и аппаратной платформы.
+ Для правильного анализа таких пакетов необходимы специальные правила, отличные
+ от стандартных, и эти правила необходимо сообщить системе рефакторинга.
+ Makefile'ы таких пакетов содержат информацию, позволяющую определить точный
+ набор файлов, который скомпилирован в данный пакет.
+\end_layout
+
+\begin_layout Standard
+Так как язык Go очень молод, то стандартная библиотека постоянно претерпевает
+ изменения, всвязи с чем меняется и набор файлов аппаратно и системно-зависимых
+ пакетов.
+ Поэтому было принято решение сохранять эту информацию в конфигурационных
+ файлах.
+\end_layout
+
+\begin_layout Standard
+После настройки конфигурационных файлов программа готова к проведению рефакторин
+гов.
+ Необходимые конфигурационные файлы и их формат будут подробнее описаны
+ в руководстве пользователя в разделе 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ссылка
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Фазы компиляции
+\end_layout
+
+\begin_layout Standard
+Проведение лексического, синтаксического и семантического анализов программы
+ являются, в общем случае, фазами компиляции.
+ Ниже приведены термины теории компиляторов, которые будут использоваться
+ в этой главе.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Символ
+\series default
+\shape default
+ -- это именованная сущность программы, определяемая парой <name, info>,
+ где name -- идентификатор сущности, info -- описание сущности.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Таблица символов
+\series default
+\shape default
+ -- это отображение идентификаторов символов, видимых в некотором узле синтаксич
+еского дерева, в описания соответствующих этим символам сущностей.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Область
+\series default
+\shape default
+ -- множество узлов синтаксического дерева, в которых по семантике языка
+ программирования видимы одни и те же символы.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Вложенная область
+\series default
+\shape default
+ -- это область, узлы которой являются дочерними по отношению к узлу другой
+ области.
+ Вложенная область расширяет таблицу символов родительского узла, причем
+ некоторые символы могут быть экранированы.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Область видимости символа
+\series default
+\shape default
+ -- область программы, в которой может использоваться идентификатор данного
+ символа.
+ Определяется семантикой языка.
+ Если идентификатор символа может использоваться в некоторой области программы,
+ то говорят что символ 
+\shape italic
+виден
+\shape default
+ в этой области.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Синтаксический анализ
+\series default
+\shape default
+ -- определение принадлежности некоторой цепочки символов к некоторой контекстно
+-свободной грамматике и построение дерева вывода цепочки в этой грамматике.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Семантический анализ
+\series default
+\shape default
+ -- построение таблицы символов для каждой области в дереве синтаксического
+ разбора.
+ На самом деле общая задача семантического анализа включает несколько подзадач,
+ в том числе проверку кода на соответствие семантике языка.
+ Однако разработанная система работает только с заведомо семантически верным
+ кодом, поэтому, в данном контексте, задачей семантического анализа является
+ построение множества таблиц символов.
+\end_layout
+
+\begin_layout Standard
+Более подробно с основами теориии компиляторов можно ознакомиться в 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Синтаксический анализ
+\end_layout
+
+\begin_layout Standard
+После чтения необходимой информации из конфигурационных файлов, система
+ рефакторинга переходит к синтаксическому анализу.
+ В разработанной системе синтаксический анализ производится с помощью пакетов
+ из стандартной библиотеки языка Go (см.
+ раздел 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Работа-с-исходными"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Синтаксический анализ производится в два этапа.
+ На первом этапе анализируются все пакеты программы, указанные в конфигурационно
+м файле.
+ После этого, система изучает все операторы импорта и передает на синтаксический
+ анализ недостающие пакеты из стандартной библиотеки языка Go.
+ Этот процесс имеет рекурсивную природу и аналогичен обходу графа зависимостей
+ в глубину.
+ Это гарантирует, что все зависимости будут обработаны, и в полученном синтаксич
+еском лесе не будет ни одной ссылки на пакеты, синтаксическое дерево которых
+ отсутствует.
+\end_layout
+
+\begin_layout Standard
+В процессе рекурсивного обхода операторов импорта для каждого пакета составляетс
+я карта зависимостей.
+ Она представляет собой словарь, ключом которого является адрес файла, а
+ значением -- массив зависимостей этого файла.
+ Зависимость представляется в виде специального символа 
+\family typewriter
+\series bold
+PackageSymbol
+\family default
+\series default
+, который представляет собой символ импортируемого пакета.
+ Этот символ хранит ссылку на объект, полностью описывающий импортируемый
+ пакет, а также имя, которое присвоено этому пакету в данном файле.
+ 
+\end_layout
+
+\begin_layout Standard
+Символы типа 
+\family typewriter
+\series bold
+PackageSymbol
+\family default
+\series default
+ имеют нехарактерную для остальных символов область видимости -- в пределах
+ одного файла.
+ Поэтому они не принадлежат ни одной реально существующей таблице символов
+ и используются специальным образом, что описано более подробно в подразделе
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Семантический-анализ"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Семантический анализ
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Семантический-анализ"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+После синтаксического анализа система рефакторинга переходит к семантичекому
+ анализу полученного синтаксического леса.
+ Семантический анализ реализован в четыре прохода:
+\end_layout
+
+\begin_layout Itemize
+Анализ глобальных типов данных
+\end_layout
+
+\begin_layout Itemize
+Анализ сигнатур функций и методов
+\end_layout
+
+\begin_layout Itemize
+Анализ глобальных переменных и констант
+\end_layout
+
+\begin_layout Itemize
+Анализ тел функций и методов
+\end_layout
+
+\begin_layout Standard
+Такой порядок проходов выбран специально, чтобы перед каждым следующим проходом
+ были созданы все символы, которые могут понадобиться во время этого прохода.
+ Например, для анализа сигнатур методов, системе необходимо знать о типах
+ данных, которые могут быть использованы при объявлении параметров.
+ В то же время, на этом этапе системе еще не нужна информация о глобальных
+ переменных и константах, потому что их использование в сигнатурах невозможно.
+\end_layout
+
+\begin_layout Standard
+Составляемый набор таблиц символов состоит из блоков, имеющих древовидную
+ структуру.
+ Таблица символов, находящаяся в некотором узле такого дерева, описывает
+ определенную область программы.
+ При этом, таблицы, находящиеся в родительских узлах, являются 
+\shape italic
+открытыми
+\shape default
+ для дочерних, то есть область, описанная таблицей дочернего узла, является
+ вложенной для области, описанной в родительском узле.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+здесь мб рисунок как пример
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Основным деревом таблиц символов из получаемого в результате семантического
+ анализа набора, является дерево пакетов анализируемой программы.
+ Корнем этого дерева является таблица символов 
+\family typewriter
+\series bold
+Basic
+\family default
+\series default
+, содержащая встроенные идентификаторы языка Go, а именно встроенные типы
+ данных, функции и константы 
+\family typewriter
+\series bold
+nil
+\family default
+\series default
+, 
+\family typewriter
+\series bold
+true
+\family default
+\series default
+ и 
+\family typewriter
+\series bold
+false
+\family default
+\series default
+.
+ Дочерними узлами для таблицы 
+\family typewriter
+\series bold
+Basic
+\family default
+\series default
+ являются таблицы 
+\family typewriter
+\series bold
+Root
+\family default
+\series default
+, по одной на каждый пакет программы.
+ В таблице 
+\family typewriter
+\series bold
+Root
+\family default
+\series default
+ каждого пакета хранятся глобальные типы, переменные, константы и функции
+ этого пакета.
+ Таблица локальных переменнх некоторой функции пакета является дочерней
+ к таблице 
+\family typewriter
+\series bold
+Root
+\family default
+\series default
+ этого пакета.
+\end_layout
+
+\begin_layout Standard
+Также, существуют деревья таблиц символов, не связанные отношением вложенности
+ с таблицей 
+\family typewriter
+\series bold
+Basic
+\family default
+\series default
+.
+ Примером такого дерева является вырожденное дерево, состоящее из одной
+ таблицы полей типа-структуры.
+ Наличие механизма встраивания означает, что такие таблицы символов тоже
+ могут выстраивать деревья.
+ Также, примером таблицы символов, не являющейся дочерней таблицы 
+\family typewriter
+\series bold
+Basic
+\family default
+\series default
+, является список параметров в сигнатуре метода.
+ В то же время, эта таблица является родительской для таблицы локальных
+ переменных этого метода.
+\end_layout
+
+\begin_layout Standard
+Символы и таблицы символов системы рефакторинга реализованы в пакете 
+\family typewriter
+\series bold
+st
+\family default
+\series default
+.
+ Все символы, создаваемые семантическим анализатором, реализуют интерфейс
+ 
+\family typewriter
+\series bold
+st.Symbol
+\family default
+\series default
+.
+ Этот интерфейс включает несколько методов, в том числе:
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+Name() string
+\family default
+\series default
+ -- имя символа.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+Scope() *SymbolTable
+\family default
+\series default
+ -- таблица символов, где символ объявлен.
+ То есть символ виден в таблице 
+\family typewriter
+\series bold
+Scope()
+\family default
+\series default
+ и в таблицах, дочерних для нее.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+Identifiers() IdentSet
+\family default
+\series default
+ -- список вхождений символа во все файлы, проанализированные системой.
+\end_layout
+
+\begin_layout Standard
+Все таблицы символов в системе имеют тип 
+\family typewriter
+\series bold
+st.SymbolTable
+\family default
+\series default
+.
+ Эта структура хранит список символов и список таблиц, открытых (родительских)
+ для текущей таблицы.
+ Для типа st.SymbolTable определено несколько методов, основные приведены
+ ниже:
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+AddSymbol(s Symbol)
+\family default
+\series default
+ -- добавляет символ в текущую таблицу символов.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+AddOpenedScope(t *SymbolTable)
+\family default
+\series default
+ -- добавляет таблицу символов 
+\family typewriter
+\series bold
+t
+\family default
+\series default
+ как родительскую.
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+LookUp(name string, filename string) (Symbol, bool)
+\family default
+\series default
+ -- производит поиск символа с именем 
+\family typewriter
+\series bold
+name
+\family default
+\series default
+ в данной таблице символов.
+ Возвращает пару значений, первое из которых хранит найденный символ, а
+ второе -- флаг успешности операции.
+\begin_inset Newline newline
+\end_inset
+
+Параметр 
+\family typewriter
+\series bold
+filename
+\family default
+\series default
+ хранит имя файла, из которого было взято имя name.
+ Он нужен для правильного поиска символов пакетов 
+\family typewriter
+\series bold
+st.PackageSymbol
+\family default
+\series default
+.
+ Так как один и тот же импортируемый пакет в каждом конкретном файле может
+ иметь разное имя или вообще не импортироваться, то для корректного поиска
+ такого символа методу 
+\family typewriter
+\series bold
+LookUp
+\family default
+\series default
+ необходимо знать имя файла.
+\begin_inset Newline newline
+\end_inset
+
+Реализация процедуры 
+\family typewriter
+\series bold
+LookUp
+\family default
+\series default
+ поддерживает экранирование символов во вложенных областях.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+ForEach(toDo func(sym Symbol))
+\family default
+\series default
+ -- вызывает функцию 
+\family typewriter
+\series bold
+toDo
+\family default
+\series default
+ для каждого символа таблицы.
+\end_layout
+
+\begin_layout Subsubsection
+Анализ глобальных типов данных
+\end_layout
+
+\begin_layout Standard
+Первым этапом семантического анализа является составление списка глобальных
+ типов для каждого пакета.
+ Это делается простым обходом всех узлов синтаксического дерева, являющихся
+ объявлениями типов.
+ По каждому объявлению составляется соответствующий символ, который добавляется
+ в таблицу 
+\family typewriter
+\series bold
+Root
+\family default
+\series default
+ текущего пакета.
+ 
+\end_layout
+
+\begin_layout Standard
+В соответствии с семантикой языка Go, в пакете 
+\family typewriter
+\series bold
+st
+\family default
+\series default
+ системы рефакторинга объявлены следующие символы для представления типов
+ данных Go:
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+st.BasicTypeSymbol
+\family default
+\series default
+ -- базовый тип языка Go.
+ Символы такого типа могут находиться только в таблице 
+\family typewriter
+\series bold
+Basic
+\family default
+\series default
+.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+st.ArrayTypeSymbol
+\family default
+\series default
+ -- тип-массив.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+st.ChanTypeSymbol
+\family default
+\series default
+ -- тип-канал.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+st.FunctionTypeSymbol
+\family default
+\series default
+ -- тип-функция.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+st.InterfaceTypeSymbol
+\family default
+\series default
+ -- тип-интерфейс.
+
+\family typewriter
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+st.MapTypeSymbol
+\family default
+\series default
+ -- тип-словарь.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+st.PointerTypeSymbol
+\family default
+\series default
+ -- тип-указатель.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+st.StructTypeSymbol
+\family default
+\series default
+ -- тип-структура.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+st.AliasTypeSymbol
+\family default
+\series default
+ -- тип-псевдоним.
+ Например, если есть объявление 
+\family typewriter
+\series bold
+type
+\family default
+\series default
+ 
+\family typewriter
+\series bold
+PS
+\family default
+\series default
+ 
+\family typewriter
+\series bold
+T
+\family default
+\series default
+, то тип 
+\family typewriter
+\series bold
+PS
+\family default
+\series default
+ является псевдонимом типа 
+\family typewriter
+\series bold
+T
+\family default
+\series default
+.
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+\series bold
+st.UnresolvedTypeSymbol
+\family default
+\series default
+ -- символ, описывающий тип, который был неизвестен на момент создания символа.
+ Такие символы могут возникать в течение первого прохода из-за произвольного
+ порядка объявлений Go, а также из-за зависимостей между пакетами.
+ К началу второго прохода все такие символы будут заменены корректными ссылками.
+ 
+\end_layout
+
+\begin_layout Standard
+Вхождение символа-типа в исходный код может быть реализовано двумя типами
+ узлов синтаксического дерева.
+ В случае символа, объявленного в анализируемом пакете, это идентификатор.
+ В случае типа из импортируемого пакета это селектор единичной глубины (
+\family typewriter
+\series bold
+p.Name
+\family default
+\series default
+).
+ В обоих случаях, если такой тип не был найден в таблице 
+\family typewriter
+\series bold
+Root
+\family default
+\series default
+ соответствующего пакета, то вместо него записывается заглушка типа 
+\family typewriter
+\series bold
+UnresolvedTypeSymbol
+\family default
+\series default
+, которая хранит информацию, позволяющую в последствии определить, каким
+ символом ее нужно заменить.
+\end_layout
+
+\begin_layout Standard
+Замена заглушек ссылками на настоящие символы осуществляется специальной
+ процедурой после окончания первого прохода для всех пакетов.
+ Для каждого пакета, функция перебирает все типы его таблицы 
+\family typewriter
+\series bold
+Root
+\family default
+\series default
+ и для каждого символа-типа запускает рекурсивный обход.
+ В процессе обхода в самом символе, а так же во всех символах, на которые
+ он ссылается, производится поиск и замена заглушек.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Заключение
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+addcontentsline{toc}{section}{Заключение}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Псевдокод для записи алгоритмов
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+addcontentsline{toc}{section}{Список литературы}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
+
+\end_inset
+
+Скоробогатов С.Ю.
+ 
+\emph on
+Лекции по курсу 
+\begin_inset Quotes fld
+\end_inset
+
+Компиляторы
+\begin_inset Quotes frd
+\end_inset
+
+
+\emph default
+.
+ -- 2009.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-2"
+
+\end_inset
+
+The Go Programming Language [Электронный ресурс].
+ -- Режим доступа: http://golang.org/.
+\end_layout
+
+\end_body
+\end_document
