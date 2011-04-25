@@ -2346,6 +2346,13 @@ a
 
 \begin_layout Subsection
 Извлечение интерфейса
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Извлечение-интерфейса"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4452,6 +4459,408 @@ reference "sec:Семантика-преобразований"
  Примером может служить выражение, стоящее в левой части оператора присваивания.
  Замена такого выражения вызовом метода, который просто его возвращает,
  очевидно, нарушит семантику программы.
+\end_layout
+
+\begin_layout Subsubsection
+Изменение синтаксического дерева
+\end_layout
+
+\begin_layout Standard
+Этот этап проведения рефакторинга сильно зависит от выбранного пользователем
+ преобразования.
+ Приведем описание проводимых изменений синтаксического дерева в порядке
+ возрастающей сложности.
+\end_layout
+
+\begin_layout Paragraph
+Сортировка объявлений.
+\end_layout
+
+\begin_layout Standard
+Рефакторинг 
+\begin_inset Quotes fld
+\end_inset
+
+сортировка объявлений
+\begin_inset Quotes frd
+\end_inset
+
+ по полученной от пользователя команде формирует отношение превосходства
+ для объявлений верхнего уровня.
+ На основе этого отношения производится сортировка массива объявлений в
+ синтаксическом дереве файла.
+\end_layout
+
+\begin_layout Paragraph
+Переименование.
+\end_layout
+
+\begin_layout Standard
+Для рефакторинга 
+\begin_inset Quotes fld
+\end_inset
+
+переименование
+\begin_inset Quotes frd
+\end_inset
+
+ требуется переименовать все вхождения заданного символа.
+ Это делается простым перебором узлов из массива 
+\family typewriter
+\series bold
+Idents
+\family default
+\series default
+ с присваиванием нового имени полю 
+\family typewriter
+\series bold
+Name
+\family default
+\series default
+ каждого узла.
+\end_layout
+
+\begin_layout Paragraph
+Реализация интерфейса.
+\end_layout
+
+\begin_layout Standard
+Рефакторинг 
+\begin_inset Quotes fld
+\end_inset
+
+реализация интерфейса
+\begin_inset Quotes frd
+\end_inset
+
+ для заданного пользователем символа-типа должен дополнить множество его
+ методов таким образом, чтобы он реализовывал некоторый интерфейс, также
+ заданный пользователем.
+ Для этого, система рефакторинга сначала перебирает уже объявленные методы
+ заданного типа.
+ В случае обнаружения уже реализованных методов интерфейса, система будет
+ добавлять лишь недостающие методы.
+ Изменение синтаксического дерева в этом случае заключается в добавлении
+ узлов-объявлений в конец массива объявлений.
+\end_layout
+
+\begin_layout Standard
+Обнаружение у типа метода, имя которого совпадает с именем интерфейсного
+ метода, но сигнатура отличается, является случаем, когда рефакторинг нельзя
+ довести до конца без изменения семантики работы программы.
+ Поэтому, в этом случае, система выдаст пользователю сообщение об ошибке
+ и не будет проводить рефакторинг.
+\end_layout
+
+\begin_layout Paragraph
+Извлечение интерфейса.
+\end_layout
+
+\begin_layout Standard
+Для проведения рефакторинга 
+\begin_inset Quotes fld
+\end_inset
+
+извлечение интерфейса
+\begin_inset Quotes frd
+\end_inset
+
+ система обходит тело заданного пользователем метода и составляет список
+ всех обращений к заданному параметру.
+ Для того, чтобы извлечение интерфейса было возможным, этот список должен
+ состоять лишь из вызовов методов этого параметра, а также небольшого набора
+ других действий (см.
+ раздел 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Извлечение-интерфейса"
+
+\end_inset
+
+).
+ Успешное проведение рефакторинга подразумевает внесение двух изменений
+ в синтаксическое дерево: добавление объявления интерфейса в список объявлений,
+ а также замена типа параметра на идентификатор созданного интерфейса.
+\end_layout
+
+\begin_layout Paragraph
+Извлечение метода.
+\end_layout
+
+\begin_layout Standard
+Рефакторинг 
+\begin_inset Quotes fld
+\end_inset
+
+извлечение метода
+\begin_inset Quotes frd
+\end_inset
+
+ создает метод на основе некоторой последовательности узлов-операторов,
+ и заменяет эту последовательность оператором вызова нового метода.
+ Сначала, система по заданным пользователем координатам выделяет подмножество
+ синтаксического дерева, которое нужно извлечь в метод.
+ Затем, полученное множество анализируется на предмет зависимостей от внешнего
+ кода, которые нужно выделить в параметры создаваемого метода.
+ После этого система приступает к формированию узла, представляющего объявление
+ нового метода и добавлению этого узла в массив объявлений файла.
+ В завершение, создается узел-вызов, который подставляется в синтаксическое
+ дерево вместо извлеченного набора узлов.
+\end_layout
+
+\begin_layout Standard
+Сложность проведения рефакторинга 
+\begin_inset Quotes fld
+\end_inset
+
+извлечения метода
+\begin_inset Quotes frd
+\end_inset
+
+ обуславливается несколькими ньюансами.
+ Во-первых, извлекаемый блок операторов должен удовлетворять двум условиям:
+\end_layout
+
+\begin_layout Itemize
+все операторы блока должны находиться в одной области видимости.
+ При наличии в блоке операторов с вложенными областями (например, 
+\family typewriter
+\series bold
+if
+\family default
+\series default
+-
+\family typewriter
+\series bold
+else
+\family default
+\series default
+ или 
+\family typewriter
+\series bold
+for
+\family default
+\series default
+), эти операторы должны полностью принадлежать извлекаемому множеству.
+\end_layout
+
+\begin_layout Itemize
+извлекаемый блок не должен содержать операторов возврата 
+\family typewriter
+\series bold
+return
+\family default
+\series default
+, в том числе и во вложенных областях.
+\end_layout
+
+\begin_layout Standard
+Во-вторых, поиск зависимостей от внешнего кода подразумевает динамическое
+ составление списка переменных, объявленных в пределах извлекаемого кода.
+ При этом, такой список должен быть структурированным, в соответствии с
+ областями видимости операторов.
+ Пусть, например, система извлекает следующий код:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+if true{
+\end_layout
+
+\begin_layout Plain Layout
+
+	b := getB()
+\end_layout
+
+\begin_layout Plain Layout
+
+	println(b)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+println(b)
+\end_layout
+
+\end_inset
+
+Здесь переменная 
+\family typewriter
+\series bold
+b
+\family default
+\series default
+, объявленная внутри условного блока, вне его не видна.
+ Поэтому, переменная 
+\family typewriter
+\series bold
+b
+\family default
+\series default
+, к которой производится обращение в последнем операторе извлекаемого блока
+ должна быть вынесена в параметр.
+ 
+\end_layout
+
+\begin_layout Standard
+Если в извлекаемом блоке объявлена переменная, которая используется вне
+ этого блока, то система не проводит рефакторинг и сообщает пользователю
+ об ошибке.
+\end_layout
+
+\begin_layout Standard
+Еще одной проблемой, возникающей в процессе извлечения метода, является
+ изменение переменных, которые являются параметрами извлекаемого метода.
+ Если в извлекаемом коде производится присваивание к такой переменной, либо
+ к этой переменной применяется оператор взятия адреса, то такую переменную
+ необходимо передавать по указателю.
+ Рассмотирм процесс извлечения следующего кода:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+a += 10
+\end_layout
+
+\begin_layout Plain Layout
+
+changeA(&a)
+\end_layout
+
+\end_inset
+
+Здесь значение переменной 
+\family typewriter
+\series bold
+a
+\family default
+\series default
+, которая, очевидно, является внешней зависимостью и должна быть вынесена
+ в параметр, изменяется.
+ Если провести извлечение без изменений, то изменения, проводимые методом,
+ не будут видны вызывающему коду:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+func wrong(a int){
+\end_layout
+
+\begin_layout Plain Layout
+
+	a += 10
+\end_layout
+
+\begin_layout Plain Layout
+
+	changeA(&a)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+Поэтому, в таком случае применяется передача по указателю, и процедуре рефактори
+нга нужно провести дополнительные преобразования синтаксического дерева:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+func right(a *int){
+\end_layout
+
+\begin_layout Plain Layout
+
+	*a += 10
+\end_layout
+
+\begin_layout Plain Layout
+
+	changeA(a)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+Соответственно, вызов, которым будет заменен извлекаемый код, должен выглядеть
+ следующим образом:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+right(&a)
+\end_layout
+
+\end_inset
+
+Теперь код метода и вызывающий код работают с одной и той же ячейкой памяти,
+ семантика кода не нарушена.
+\end_layout
+
+\begin_layout Paragraph
+Встраивание метода.
+\end_layout
+
+\begin_layout Standard
+Рефакторинг 
+\begin_inset Quotes fld
+\end_inset
+
+встраивание метода
+\begin_inset Quotes frd
+\end_inset
+
+ является преобразованием, обратным к рефакторингу 
+\begin_inset Quotes fld
+\end_inset
+
+извлечение метода
+\begin_inset Quotes frd
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
