@@ -1,5 +1,5 @@
-#LyX 1.6.7 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass article
@@ -15,18 +15,26 @@
 \usepackage{multirow}
 \end_preamble
 \use_default_options true
+\maintain_unincluded_children false
 \language russian
+\language_package default
 \inputencoding auto
+\fontencoding global
 \font_roman default
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \float_placement H
 \paperfontsize 12
 \spacing other 1.5
@@ -44,9 +52,18 @@
 \use_geometry true
 \use_amsmath 1
 \use_esint 1
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Предметный указатель
+\shortcut idx
+\color #008000
+\end_index
 \leftmargin 3cm
 \topmargin 2cm
 \rightmargin 1.5cm
@@ -57,15 +74,16 @@
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
-\defskip medskip
+\paragraph_indentation default
 \quotes_language french
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
-\author "" 
-\author "" 
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
 \end_header
 
 \begin_body
@@ -118,25 +136,41 @@ addcontentsline{toc}{section}{Введение}
 \begin_layout Standard
 Язык Go - императивный язык программирования, разработанный компанией Google
  в 2009 г.
- 
+ Этот язык довольно быстро развивается и с каждым годом становится популярнее
+ среди программистов.
+ Язык Go появился совсем недавно, поэтому инструментальная база этого языка
+ лишь начинает формироваться.
+ Начинают появляться простейшие среды разработки, с подсветкой синтаксиса
+ и упрощенным интерфейсом компиляции.
+ Однако, по-порежнему разработчикам недоступны средства автодополнения кода
+ и автоматизированного рефакторинга программ.
 \end_layout
 
 \begin_layout Standard
 Целью данной дипломной работы является разработка системы автоматизированного
- рефакторинга программ, написанных на языке Go.
- Сама система должна быть написана также на языке Go.
+ рефакторинга GoRefactor, выполняющую эквивалентные преобразования программ,
+ написанных на языке Go.
+ Система должна быть самоприменима, то есть языком реализации также должен
+ быть язык Go.
 \end_layout
 
 \begin_layout Standard
-Разработка поделена на два этапа:
+Структурно система GoRefactor должна состоять из двух частей: 
 \end_layout
 
 \begin_layout Enumerate
-Разработка семантического анализатора программ, написанных на языке Go.
+Cемантический анализатор программ, написанных на языке Go.
+ Практически ни один рефакторинг не может быть проведен без семантического
+ анализа, так как для проведения преобразования необходимо обладать информацией
+ об областях видимости идентификаторов.
 \end_layout
 
 \begin_layout Enumerate
-Реализация модулей рефакторинга.
+Модули рефакторинга.
+ Работа всех модулей базируется на информации, полученной в ходе семантического
+ анализа.
+ Структура системы позволяет в будущем добавить в нее дополнительные модули
+ рефакторига.
 \end_layout
 
 \begin_layout Standard
@@ -175,69 +209,70 @@ MS Visual Studio 2010
 \begin_layout Standard
 Среда разработки Microsoft Visual Studio 2010 для языка C#, содержит базовый
  набор приемов рефакторинга.
- Он включает в себя: 
+ Он включает в себя переименование сущностей, извлечение метода, инкапсуляцию
+ поля в свойства, а также извлечение и реализацию интерфейсов и изменение
+ сигнатуры метода.
 \end_layout
 
-\begin_layout Itemize
-Переименование сущностей.
- 
-\begin_inset Newline newline
+\begin_layout Standard
+Рефакторинг 
+\begin_inset Quotes fld
 \end_inset
 
-Данный прием рефакторинга позволяет безопасно переименовывать идентификаторы
- сущностей программы (переменных, методов, имен классов и т.д.), осуществляя
- модификацию всех вхождений сущности в исходный код.
+переименование сущности
+\begin_inset Quotes frd
+\end_inset
+
+ позволяет безопасно переименовывать идентификаторы сущностей программы
+ (переменных, методов, имен классов и т.д.), осуществляя модификацию всех
+ вхождений сущности в исходный код.
  
 \end_layout
 
-\begin_layout Itemize
-Извлечение метода.
- 
-\begin_inset Newline newline
-\end_inset
-
-Извлечение метода – это выделение выбранного набора инструкций языка в отдельный
- метод и замена этих инструкций вызовом метода.
+\begin_layout Standard
+Извлечением метода называют выделение выбранного набора инструкций языка
+ в отдельный метод и замена этих инструкций вызовом метода.
  Среда разработки самостоятельно определяет сигнатуру метода.
  
 \end_layout
 
-\begin_layout Itemize
-Инкапсуляция поля в свойство с автоматической генерацией аксессоров.
- 
-\begin_inset Newline newline
+\begin_layout Standard
+Рефакторинг 
+\begin_inset Quotes fld
 \end_inset
 
-Этот прием рефакторинга позволяет обернуть поле в свойство, с автоматическим
- созданием заглушек для методов доступа get и set.
+инкапсуляция поля в свойство
+\begin_inset Quotes frd
+\end_inset
+
+ позволяет обернуть поле в свойство, с автоматическим созданием заглушек
+ для методов доступа get и set.
  
 \end_layout
 
-\begin_layout Itemize
-Извлечение и реализация интерфейсов.
- 
-\begin_inset Newline newline
-\end_inset
-
+\begin_layout Standard
 Извлечение интерфейса из класса – это создание интерфейса на основе некоторых
  (или всех) public свойств или методов класса.
  
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
+\begin_layout Standard
 Реализация интерфейса – это создание в классе заглушек методов и свойств,
  необходимых для реализации классом выбранного интерфейса.
  
 \end_layout
 
-\begin_layout Itemize
-Перестановка и удаление параметров метода.
- 
-\begin_inset Newline newline
+\begin_layout Standard
+Рефакторинг 
+\begin_inset Quotes fld
 \end_inset
 
-Этот прием рефакторинга позволяет безопасно изменять сигнатуры методов,
- производя необходимые изменения во всех вызовах метода.
+изменение сигнатуры метода
+\begin_inset Quotes frd
+\end_inset
+
+ позволяет безопасно переставлять и удалять параметры метода, производя
+ необходимые изменения во всех вызовах этого метода.
  
 \end_layout
 
@@ -255,68 +290,22 @@ Eclipse
 Среда разработки Eclipse для языка Java включает в себя все приемы рефакторинга,
  доступные в Microsoft Visual Studio 2010.
  Кроме них, разработчик может воспользоваться следующими преобразованиями:
+ генерация конструктора, перемещение сущностей между классами и вдоль иерархии
+ наследования, изменение сигнатуры метода, сортировка объявлений.
 \end_layout
 
-\begin_layout Itemize
-Генерация конструктора класса на основе полей класса, или же на основе конструкт
-ора одного из родительских классов.
-\end_layout
-
-\begin_layout Itemize
-Перемещение сущностей между классами;
-\end_layout
-
-\begin_layout Itemize
-Перемещение сущностей вверх и вниз по иерархии наследования; 
-\end_layout
-
-\begin_layout Itemize
-Изменение сигнатуры метода с возможностью оставить старый метод.
- Этот метод будет содержать в себе вызов нового;
-\end_layout
-
-\begin_layout Itemize
-Сортировка объявлений.
- 
+\begin_layout Standard
+Изменение сигнатуры в Eclipse может быть выполнено в безопасном режиме,
+ с сохранением старого метода.
+ Метод с новой сигнатурой будет вызываться старым методом.
 \end_layout
 
 \begin_layout Standard
 Eclipse позволяет сортировать как объявления внутри класса, так и сами классы
  в файле.
- При сортировке объявления объединяются в следующие группы: 
-\end_layout
-
-\begin_layout Itemize
-Типы.
-\end_layout
-
-\begin_layout Itemize
-Статические поля.
-\end_layout
-
-\begin_layout Itemize
-Статические инициализаторы.
-\end_layout
-
-\begin_layout Itemize
-Статические методы.
-\end_layout
-
-\begin_layout Itemize
-Поля.
-\end_layout
-
-\begin_layout Itemize
-Инициализаторы.
-\end_layout
-
-\begin_layout Itemize
-Конструкторы.
-\end_layout
-
-\begin_layout Itemize
-Методы.
- 
+ При сортировке объявления объединяются в группы типам сущностей: типы,
+ статические поля, статические инициализаторы, статические методы, поля,
+ инициализаторы, конструкторы и методы.
 \end_layout
 
 \begin_layout Standard
@@ -332,23 +321,25 @@ IntelliJ IDEA
 \begin_layout Standard
 IntelliJ IDEA предоставляет самый большой набор средств работы с кодом.
  Помимо вышеописанных видов рефакторинга, данная среда разработки позволяет
- автоматически производить следующие действия:
+ автоматически производить более сложные рефакторинги.
 \end_layout
 
-\begin_layout Itemize
-«Безопасное» удаление сущности.
- 
-\begin_inset Newline newline
+\begin_layout Standard
+«Безопасное» удаление сущности предупредит пользователя о том, что удаляемая
+ сущность где-то используется и предоставит все ссылки на её вхождения.
+\end_layout
+
+\begin_layout Standard
+Рефакторинг 
+\begin_inset Quotes fld
 \end_inset
 
-При таком удалении среда разработки предоставит пользователю информацию
- обо всех ссылках на удаляемую сущность, при их наличии.
- 
-\end_layout
+извлечение метода в объект
+\begin_inset Quotes frd
+\end_inset
 
-\begin_layout Itemize
-Обертывание метода в отдельный класс и автоматическая замена его вызовов
- на вызовы вида: 
+ позволяет провести обертывание метода в отдельный класс и автоматическую
+ замену его вызовов на вызовы вида: 
 \family typewriter
 \series bold
 new NewClass().Method()
@@ -358,28 +349,32 @@ new NewClass().Method()
 .
 \end_layout
 
-\begin_layout Itemize
-Упаковка возвращаемого значения метода в объект нового класса или в объект
- существующего класса, с указанием имени поля, содержащего возвращаемое
- значение.
+\begin_layout Standard
+Также, IntelliJ IDEA позволяет упаковать возвращаемое значение метода в
+ объект нового класса или в объект существующего класса, с указанием имени
+ поля, содержащего возвращаемое значение.
  
 \end_layout
 
-\begin_layout Itemize
-Замена наследования на делегирование.
- 
-\begin_inset Newline newline
+\begin_layout Standard
+Рефакторинг 
+\begin_inset Quotes fld
 \end_inset
 
-Методы целевого интерфейса оборачиваются в новый внутренний класс, и в исходном
- классе создается объект этого класса.
+замена наследования на делегирование
+\begin_inset Quotes frd
+\end_inset
+
+ выглядит так: методы целевого интерфейса оборачиваются в новый внутренний
+ класс, и в исходном классе создается объект этого класса.
  Вызовы методов интерфейса исходный класс делегирует этому объекту.
  
 \end_layout
 
-\begin_layout Itemize
-Поиск фрагментов кода, дублирующих код определенного метода, и замена этих
- фрагментов вызовом метода.
+\begin_layout Standard
+IntelliJ IDEA предоставляет возможность автоматического поиска фрагментов
+ кода, дублирующих код определенного метода, и замену этих фрагментов вызовом
+ метода.
  
 \end_layout
 
@@ -493,7 +488,16 @@ public int someMethod(int a, Object newParam){
 
 \end_inset
 
-
+В результате, старый интерфейс сохранился, и клиентский код, использовавший
+ старый метод, по-прежнему компилируется.
+ Во второй строке листинга видно, что старый метод вызывает новый с некоторым
+ значением по умолчанию для нового параметра (в данном случае 
+\family typewriter
+\series bold
+null
+\family default
+\series default
+)
 \end_layout
 
 \begin_layout Subsubsection
@@ -608,7 +612,10 @@ private class NewClass{
 
 \end_inset
 
-
+Обертывание метода в класс обычно применяется для упрощения сигнатуры метода
+ с слишком большим количеством параметров.
+ Когда метод обернут в класс, он становится гораздо более гибким и настраиваемым
+, так как может использовать поля и внутренние методы класса.
 \end_layout
 
 \begin_layout Subsubsection
@@ -655,7 +662,7 @@ someMethod
 StoreClass
 \family default
 \series default
-, то результат будет выглядеть следующим образом:
+, то в результате мы получим:
 \end_layout
 
 \begin_layout Standard
@@ -739,7 +746,10 @@ public class StoreClass{
 
 \end_inset
 
-
+Как мы видим, этот рефакторинг позволяет быстро изменить тип возвращаемого
+ значения метода.
+ Это может применяться для унификации типов возвращаемых значений некоторого
+ набора методов.
 \end_layout
 
 \begin_layout Subsubsection
@@ -988,8 +998,8 @@ name "sub:Структура-и-синтаксис"
  с исходным кодом.
  Любая сущность, объявленная в файле пакета, видна в других файлах этого
  пакета.
- При выполнении определенных условий сущность может быть экспортирована
- и использована в других пакетах.
+ Если имя сущности начинается с заглавной буквы, -- она экспортируется,
+ то есть может быть  использована в других пакетах.
 \end_layout
 
 \begin_layout Standard
@@ -1006,68 +1016,34 @@ import
 \end_layout
 
 \begin_layout Standard
-Язык Go позволяет объявлять и использовать следующие виды сущностей:
+Язык Go позволяет объявлять и использовать несколько видов сущностей.
+ Это переменные и константы, пользователькие именованные типы данных, а
+ также функции и методы.
 \end_layout
 
-\begin_layout Itemize
-Переменная/константа.
- Могут быть глобальными в пределах пакета, и даже экспортироваться из него.
+\begin_layout Standard
+Пользовательские типы могут быть созданы на основе базовых типов данных
+ Go: структур, массивов, срезов, отображений, каналов, интерфейсов, типов-функци
+й.
 \end_layout
 
-\begin_layout Itemize
-Тип.
- Помимо набора базовых типов, программист может объявлять и другие типы
- данных:
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-структуры
-\end_layout
-
-\begin_layout Itemize
-массивы
-\end_layout
-
-\begin_layout Itemize
-каналы
-\end_layout
-
-\begin_layout Itemize
-словари
-\end_layout
-
-\begin_layout Itemize
-интерфейсы
-\end_layout
-
-\begin_layout Itemize
-типы-функции
-\end_layout
-
-\begin_layout Itemize
-типы-псевдонимы
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-Функция/метод.
- Методом называется функция, вызываемая для экземпляров определенного типа.
+\begin_layout Standard
+Методом в Go называется функция, вызываемая для экземпляров определенного
+ типа.
  Здесь можно провести аналогию с методами класса в объектно-ориентированных
  языках программирования.
 \end_layout
 
 \begin_layout Standard
-Опишем несколько синтаксических особенностей языка Go:
+Язык Go имеет ряд синтаксический особенностей, которые описаны ниже.
 \end_layout
 
-\begin_layout Itemize
-Быстрое объявление.
- Наряду со стандартным объявлением переменной с явным указанием типа, в
- Go есть возможность совместить объявление переменной с одновременным присваиван
-ием ей значения.
- Это действие записывается как обычное присваивание, но вместо оператора
- присваивания '
+\begin_layout Standard
+Наряду со стандартным объявлением переменной с явным указанием типа, в Go
+ есть возможность совместить объявление переменной с одновременным присваиванием
+ ей значения.
+ Это действие называется объявлением переменной с выведением типа и записывается
+ как обычное присваивание, где вместо оператора присваивания '
 \family typewriter
 \series bold
 =
@@ -1082,27 +1058,19 @@ import
 '.
  В этом случае компилятор самостоятельно вычисляет тип переменной по типу
  присваиваемого значения.
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
+\begin_layout Standard
 Наличие такого оператора означает, что семантический анализатор должен уметь
  вычислять тип произвольного выражения языка.
 \end_layout
 
-\begin_layout Itemize
-Блочное объявление констант и идентификатор 
-\family typewriter
-\series bold
-iota
-\family default
-\series default
-.
- Переменные и константы могут быть объявлены целыми блоками.
- Например, блок констант выглядит следующим образом:
-\begin_inset Newline newline
-\end_inset
-
-
+\begin_layout Standard
+Также в Go существует специальная конструкция для удобного объявления набора
+ связанных констант.
+ Переменные и константы в Go могут быть объявлены целыми блоками.
+ Например, блок, в котором объявляются три константы A, B и C, выглядит
+ как
 \begin_inset listings
 lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
 inline false
@@ -1115,17 +1083,17 @@ const (
 
 \begin_layout Plain Layout
 
-	a = 0
+	A = 0
 \end_layout
 
 \begin_layout Plain Layout
 
-	b = 1
+	B = 1
 \end_layout
 
 \begin_layout Plain Layout
 
-	//...
+	C = 2
 \end_layout
 
 \begin_layout Plain Layout
@@ -1141,31 +1109,22 @@ const (
 iota
 \family default
 \series default
-, значение которого в начале блока равно 0 и инкрементируется после каждой
- новой константы.
-\begin_inset Newline newline
-\end_inset
-
-Эта возможность вводит зависимость значения константы от ее положения в
- блоке.
- Следовательно, сортировать объявления внутри блока, использующего 
-\family typewriter
-\series bold
-iota
-\family default
-\series default
-, нельзя.
+, значение которого в начале блока равно 0 и инкрементируется на каждом
+ вхождении идентификатора iota в блоке.
 \end_layout
 
-\begin_layout Itemize
-Мультиприсваивание.
+\begin_layout Standard
+Если при объявлении константы используется iota, то ее значение зависит
+ от положения объявления внутри блока.
+ Тем самым, рефакторинг не должен изменять порядок объявлений таких констант
+ внутри блока, и, например, их сортировка оказывается невозможной.
+\end_layout
+
+\begin_layout Standard
+Язык Go позволяет выполнять мультиприсваивание.
  Операторы присваивания и быстрого объявления могут принимать сразу по несколько
  операндов слева и справа.
  Например, корректна следующая запись:
-\begin_inset Newline newline
-\end_inset
-
-
 \begin_inset listings
 lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
 inline false
@@ -1181,10 +1140,6 @@ a,b = 1,2
 Кроме того, функции и методы также могут возвращать целый список значений,
  и в правой части присваивания вместо списка операндов может стоять вызов
  такой функции:
-\begin_inset Newline newline
-\end_inset
-
-
 \begin_inset listings
 lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
 inline false
@@ -1197,8 +1152,65 @@ a,b = getAandB()
 
 \end_inset
 
-Следовательно, рефакторинг функций и методов Go должен уметь работать со
- списками возвращаемых значений.
+
+\end_layout
+
+\begin_layout Standard
+Также, в Go есть возможность замены списка аргументов в вызове функции вызовом
+ другой функции.
+ Пусть объявлены функции 
+\family typewriter
+\series bold
+f
+\family default
+\series default
+ и 
+\family typewriter
+\series bold
+g
+\family default
+\series default
+:
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+func f(a int,b string){}
+\end_layout
+
+\begin_layout Plain Layout
+
+func g() (int,string){}
+\end_layout
+
+\end_inset
+
+Тогда, композиция этих функций может быть записана вот так:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+f(g())
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Возможности мультиприсваивания и замены списка аргументов вызовом означают,
+ что рефакторинг функций и методов Go должен уметь работать со списками
+ возвращаемых значений.
  Например, должно быть возможно извлечение списка выражений в метод.
 \end_layout
 
@@ -1214,7 +1226,7 @@ name "sub:Типизация"
 \end_layout
 
 \begin_layout Standard
-Язык Go не является объектно ориентированным языком, в нем нет таких понятий
+Язык Go не является объектно-ориентированным языком, в нем нет таких понятий
  как 
 \begin_inset Quotes fld
 \end_inset
@@ -1232,30 +1244,46 @@ name "sub:Типизация"
 \end_inset
 
 .
- С другой стороны, тип может иметь свои методы и инкапсулировать логику.
- Также есть механизм, напоминающий наследование, который позволяет избежать
- дублирования одного функционала в разных типах.
+ С другой стороны, с любым именованным типом может быть связан набор методов,
+ вызов которых для значения этого типа можно понимать как передачу объекту
+ сообщения.
+ Также есть механизм встраивания типов, напоминающий наследование.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-про утиную типизацию надо?
-\end_layout
-
+В языке Go реализована статическая 
+\begin_inset Quotes fld
 \end_inset
 
+утиная
+\begin_inset Quotes frd
+\end_inset
 
-\end_layout
+ типизация.
+ Это означает, что можно объявить некоторый тип-интерфейс I, представляющий
+ собой набор заголовков методов, и тогда значение типа T автоматически становитс
+я совместимо по присваиванию с переменной типа I, если тип T обладает указанным
+ в объявлении интерфейса I набором методов.
+ Ключевое отличие типов-интерфейсов языка Go от интерфейсов в других языках
+ заключается в том, что типы языка Go реализуют интерфейсы неявно, по факту
+ обладания нужным набором методов, тогда как другие строго типизированные
+ объектно-ориентированные языки (например, Java) требуют явного указания
+ реализуемых интерфейсов при объявлении типа.
+ Это, с одной стороны, роднит язык Go с такими языками, как Python и Ruby,
+ обладающими 
+\begin_inset Quotes fld
+\end_inset
 
-\begin_layout Standard
-В языке Go реализована статическая утиная типизация.
- Это означает, что тип объекта определяется набором его методов, и наследование
- интерфейсов в явном виде отсутствует.
- Причем проверка того факта, что тип реализует требуемый интерфейс, производится
- на этапе компиляции.
+утиной
+\begin_inset Quotes frd
+\end_inset
+
+ типизацией в силу своей динамической природы (проверка существования метода
+ у значения осуществляется во время выполнения программы при попытке вызова
+ этого метода).
+ С другой стороны, в отличие от динамических языков, совместимость значений
+ с интерфейсами проверяется компилятором языка Go статически, а не во время
+ выполнения программы.
  Приведем пример, демонстрирующий статическую утиную типизацию в языке Go:
 \end_layout
 
@@ -1335,38 +1363,40 @@ Reader
  Если есть некая функция 
 \family typewriter
 \series bold
-f(r Reader)
+f
 \family default
 \series default
-, принимающая на вход объект типа 
+, принимающая на вход значение типа 
 \family typewriter
 \series bold
 Reader
 \family default
 \series default
-.
- При передаче в нее объекта типа 
+, то при передаче в нее значения типа 
 \family typewriter
 \series bold
 T2
 \family default
 \series default
- компилятор выдаст ошибку.
- Передача же объекта типа 
+ компилятор выдаст ошибку, в то время как передача  в функцию 
+\family typewriter
+\series bold
+f
+\family default
+\series default
+ значения типа 
 \family typewriter
 \series bold
 T1
 \family default
 \series default
- в этом случае является корректным действием.
+, напротив, является корректным действием.
 \end_layout
 
 \begin_layout Standard
-Также рассмотрим механизм встраивания (embedding).
- Если структурный тип расширяет функциональность уже существующего типа,
- то применяется этот механизм.
- Новый тип получает все поля и методы встраиваемого типа.
- Встраиваться могут сразу несколько типов.
+В языке Go нет понятия наследования в полном смысле этого слова.
+ Механизм встраивания (embedding) позволяет одному типу расширить функциональнос
+ть одного или сразу нескольких типов.
 \end_layout
 
 \begin_layout Standard
@@ -1441,38 +1471,71 @@ type T2 struct{
 \end_layout
 
 \begin_layout Standard
-В этом случае, если некоторый объект 
-\family typewriter
-\series bold
-O
-\family default
-\series default
- имеет тип 
-\family typewriter
-\series bold
-T2
-\family default
-\series default
-, то для него можно вызывать встроенную функцию 
-\family typewriter
-\series bold
-F
-\family default
-\series default
- и прочитать встроенное поле 
-\family typewriter
-\series bold
-A
-\family default
-\series default
-.
- Тип 
+Тип 
 \family typewriter
 \series bold
 T2
 \family default
 \series default
  называется расширяющим типом.
+ Его набор методов 
+\begin_inset Quotes fld
+\end_inset
+
+унаследует
+\begin_inset Quotes frd
+\end_inset
+
+ метод 
+\family typewriter
+\series bold
+F
+\family default
+\series default
+ от типа 
+\family typewriter
+\series bold
+T1
+\family default
+\series default
+.
+ Кроме того, имея значение 
+\family typewriter
+\series bold
+x
+\family default
+\series default
+ типа 
+\family typewriter
+\series bold
+T2
+\family default
+\series default
+, можно обращаться к полю 
+\family typewriter
+\series bold
+A
+\family default
+\series default
+ значения 
+\family typewriter
+\series bold
+x
+\family default
+\series default
+ напрямую, то есть выражение 
+\family typewriter
+\series bold
+x.T1.A
+\family default
+\series default
+ можно записывать просто как 
+\family typewriter
+\series bold
+x.A
+\family default
+\series default
+.
 \end_layout
 
 \begin_layout Subsection
@@ -1486,18 +1549,8 @@ T2
 \end_layout
 
 \begin_layout Standard
-Go-рутиной 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-название?
-\end_layout
-
-\end_inset
-
- называется функция языка Go, выполняющаяся параллельно основному потоку
- и другим Go-рутинам.
+Go-рутиной называется функция языка Go, выполняющаяся параллельно основному
+ потоку и другим Go-рутинам.
  Go-рутина может быть создана в любом места программы с помощью специального
  оператора 
 \family typewriter
@@ -5150,6 +5203,7 @@ addcontentsline{toc}{section}{Список литературы}
 \end_layout
 
 \begin_layout Bibliography
+\labelwidthstring Список литературы
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
 key "key-1"
@@ -5174,6 +5228,7 @@ key "key-1"
 \end_layout
 
 \begin_layout Bibliography
+\labelwidthstring Список литературы
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
 key "key-2"
