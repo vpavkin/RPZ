@@ -5141,6 +5141,118 @@ reference "sub:Пакет-go/printer"
  списка по-очереди передаются подпрограмме сохранения.
 \end_layout
 
+\begin_layout Section
+Руководство пользователя
+\end_layout
+
+\begin_layout Standard
+Данное руководство состоит из двух частей: документации к библиотеке, реализующе
+й функции системы рефакторинга, и к тестовой программе, которая предоставляет
+ интерфейс командной строки к функциям библиотеки.
+\end_layout
+
+\begin_layout Subsection
+Документация библиотеки рефакторинга
+\end_layout
+
+\begin_layout Standard
+Библиотека, реализующая систему рефакторинга, работает с программами на
+ языке Go.
+ Такая программа может состоять из нескольких пакетов и должна иметь определенну
+ю структуру.
+ На рис.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ссыль
+\end_layout
+
+\end_inset
+
+ приведена схема расположения пакетов некоторой программы, удовлетворяющей
+ условиям работы библиотеки рефакторинга.
+ Все пакеты программы размещены в одной папке (
+\family typewriter
+\series bold
+src
+\family default
+\series default
+ на рис.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ссыль
+\end_layout
+
+\end_inset
+
+), каждый пакет представляет собой папку, названную его именем, в которой
+ лежат все файлы пакета.
+ Пакеты также могут храниться во вложенной папке (
+\family typewriter
+\series bold
+nested
+\family default
+\series default
+ на рис.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ссыль
+\end_layout
+
+\end_inset
+
+), но так, чтобы файлы одного пакета были изолированы от файлов другого.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename project_1.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Структура проекта
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Руководство пользователя тестовой утилиты
+\end_layout
+
 \begin_layout Standard
 \begin_inset Newpage newpage
 \end_inset
