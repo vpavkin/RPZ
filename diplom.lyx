@@ -6117,9 +6117,20 @@ exec_unix.go
 \end_layout
 
 \begin_layout Standard
-Стоит заметить, что пользователь может не составлять эти конфигурационные
- вручную, а просто скопировать их из корневой директории исходного кода
- библиотеки GoRefactor.
+Максимально упростить настройку проекта GoRefactor может команда 
+\family typewriter
+\series bold
+init
+\family default
+\series default
+ тестовой утилиты goref, которая описана в разделе 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Руководство-тестовой-утилиты"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -7141,7 +7152,259 @@ true
 \end_layout
 
 \begin_layout Subsection
-Руководство пользователя тестовой утилиты
+Руководство пользователя тестовой утилиты 
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Руководство-тестовой-утилиты"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Для тестирования работоспособности библиотеки GoRefactor была разработана
+ тестовая утилита goref.
+ Она позволяет пользователю проводить рефакторинг проектов GoRefactor, передавая
+ настройки через параметры командной строки.
+\end_layout
+
+\begin_layout Standard
+Утилита goref автоматически устанавливается вместе с библиотекой GoRefactor.
+ Она помещается в директорию '$GO_HOME/bin/'.
+\end_layout
+
+\begin_layout Standard
+Перед проведением рефакторингов проект GoRefactor нужно соответствующим
+ образом настроить (см.
+ подраздел 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Проект-GoRefactor"
+
+\end_inset
+
+).
+ Утилита goref может ощутимо упростить этот процесс.
+ Для этого, в корневой директории будущего проекта GoRefactor нужно выполнить
+ команду 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+goref init
+\end_layout
+
+\end_inset
+
+Утилита создаст файл 
+\family typewriter
+\series bold
+goref.cfg
+\family default
+\series default
+, в котором будет пустая секция 
+\begin_inset Quotes fld
+\end_inset
+
+.packages
+\begin_inset Quotes frd
+\end_inset
+
+, а также стандартная секция 
+\begin_inset Quotes fld
+\end_inset
+
+.specialPackages
+\begin_inset Quotes frd
+\end_inset
+
+.
+ Также будут созданы стандартные конфигурационные файлы пакетов 
+\family typewriter
+\series bold
+syscall
+\family default
+\series default
+, 
+\family typewriter
+\series bold
+os
+\family default
+\series default
+ и 
+\family typewriter
+\series bold
+runtime
+\family default
+\series default
+.
+ После этого пользователю потребуется лишь заполнить секцию 
+\begin_inset Quotes fld
+\end_inset
+
+.packages
+\begin_inset Quotes frd
+\end_inset
+
+ файла 
+\family typewriter
+\series bold
+goref.cfg
+\family default
+\series default
+ и, по необходимости, добавить секцию 
+\begin_inset Quotes fld
+\end_inset
+
+.externPackages
+\begin_inset Quotes frd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+После настройки проекта, пользователь может приступить к проведению рефакторинга.
+ С помощью тестовой утилиты goref можно выполнить рефакторинг через командную
+ строку:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+goref код_рефакторинга {параметры}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Поддерживаются следующие коды рефакторинга: 
+\family typewriter
+\series bold
+ren
+\family default
+\series default
+ -- переименование сущности, 
+\family typewriter
+\series bold
+exm
+\family default
+\series default
+ -- извлечение метода, 
+\family typewriter
+\series bold
+inm
+\family default
+\series default
+ -- встраивание метода, 
+\family typewriter
+\series bold
+imi
+\family default
+\series default
+ -- реализация интерфейса, 
+\family typewriter
+\series bold
+exi
+\family default
+\series default
+ -- извлечение интерфейса, 
+\family typewriter
+\series bold
+sort
+\family default
+\series default
+ -- сортировка объявлений.
+ 
+\end_layout
+
+\begin_layout Standard
+Параметры командной строки для каждого рефакторинга передаются как параметры
+ соответствующего метода библиотеки GoRefactor.
+ Параметры типа 
+\family typewriter
+\series bold
+bool
+\family default
+\series default
+ передаются в виде флагов.
+ Например, следующая команда
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+goref sort -t -i /home/username/project/package1/file1.go ctvfm
+\end_layout
+
+\end_inset
+
+выполняет сортировку объявлений в файле 
+\family typewriter
+\series bold
+file1.go
+\family default
+\series default
+ в порядке, заданном строкой '
+\family typewriter
+\series bold
+ctvfm
+\family default
+\series default
+', с допольнительной группировкой методов по типу приемника (флаг 
+\family typewriter
+\series bold
+-t
+\family default
+\series default
+).
+ Также будут отсортированы операторы импорта (флаг 
+\family typewriter
+\series bold
+-i
+\family default
+\series default
+).
+\end_layout
+
+\begin_layout Standard
+Команда
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=C,numbers=left,numberstyle={\tiny},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+goref help
+\end_layout
+
+\end_inset
+
+выводит полную документацию по всем командам утилиты goref, и их параметрам.
 \end_layout
 
 \begin_layout Standard
@@ -7169,17 +7432,6 @@ addcontentsline{toc}{section}{Заключение}
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Newpage newpage
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Псевдокод для записи алгоритмов
 \end_layout
 
 \begin_layout Standard
